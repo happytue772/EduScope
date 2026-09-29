@@ -1,0 +1,365 @@
+.auth-page {
+  min-height: 100vh;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 30px;
+
+  background:
+    linear-gradient(
+      135deg,
+      #e3f2fd,
+      #bbdefb
+    );
+}
+
+
+.auth-card {
+  width: 100%;
+  max-width: 430px;
+
+  padding: 34px;
+
+  border-radius: 20px;
+
+  background: #ffffff;
+
+  box-shadow:
+    0 18px 45px
+    rgba(33, 76, 112, 0.13);
+}
+
+
+.auth-brand {
+  color: #185184;
+
+  font-weight: 800;
+  font-size: 18px;
+}
+
+
+.auth-card h1 {
+  margin:
+    13px 0 6px;
+
+  color: #153f68;
+}
+
+
+.auth-description {
+  margin:
+    0 0 24px;
+
+  color: #6a8297;
+
+  font-size: 13px;
+}
+
+
+.auth-form {
+  display: flex;
+  flex-direction: column;
+
+  gap: 15px;
+}
+
+
+.auth-form label {
+  display: flex;
+  flex-direction: column;
+
+  gap: 6px;
+
+  color: #41617c;
+
+  font-size: 12px;
+
+  font-weight: 700;
+}
+
+
+.auth-form input {
+  height: 43px;
+
+  padding:
+    0 12px;
+
+  border:
+    1px solid #c9dceb;
+
+  border-radius: 9px;
+
+  outline: none;
+}
+
+
+.auth-form input:focus {
+  border-color: #5798cd;
+}
+
+
+.auth-form button {
+  height: 44px;
+
+  border: 0;
+
+  border-radius: 9px;
+
+  background: #286fa8;
+
+  color: white;
+
+  font-weight: 700;
+
+  cursor: pointer;
+}
+
+
+.auth-form button:disabled {
+  opacity: 0.6;
+
+  cursor: default;
+}
+
+
+.auth-error,
+.auth-success {
+  padding: 11px;
+
+  border-radius: 8px;
+
+  font-size: 12px;
+}
+
+
+.auth-error {
+  background: #fff0f0;
+  color: #a44848;
+}
+
+
+.auth-success {
+  background: #eaf6ee;
+  color: #33744c;
+}
+
+
+.auth-link {
+  margin-top: 20px;
+
+  text-align: center;
+
+  color: #71879a;
+
+  font-size: 12px;
+}
+
+
+.auth-link a {
+  color: #286fa8;
+
+  font-weight: 700;
+}
+/* =========================================
+   로그인 보안 알림 Modal
+   ========================================= */
+
+.auth-modal-backdrop {
+  position: fixed;
+
+  inset: 0;
+
+  z-index: 9999;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  padding: 20px;
+
+  background:
+    rgba(15, 35, 55, 0.48);
+
+  backdrop-filter:
+    blur(3px);
+}
+
+
+.auth-security-modal {
+  width: 100%;
+
+  max-width: 390px;
+
+  padding: 30px 28px;
+
+  background: #ffffff;
+
+  border-radius: 16px;
+
+  box-shadow:
+    0 18px 50px
+    rgba(20, 50, 75, 0.22);
+
+  text-align: center;
+
+  animation:
+    authSecurityModalOpen
+    0.2s ease-out;
+}
+
+
+.auth-security-icon {
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  width: 52px;
+
+  height: 52px;
+
+  margin:
+    0 auto
+    18px;
+
+  border-radius: 50%;
+
+  background: #fff3e8;
+
+  color: #d66a00;
+
+  font-size: 26px;
+
+  font-weight: 800;
+}
+
+
+.auth-security-modal h2 {
+  margin:
+    0 0
+    12px;
+
+  color: #173b57;
+
+  font-size: 21px;
+}
+
+
+.auth-security-modal p {
+  margin:
+    0;
+
+  color: #4f687b;
+
+  font-size: 14px;
+
+  line-height: 1.65;
+}
+
+
+.auth-security-description {
+  margin-top:
+    7px !important;
+
+  color:
+    #71889a !important;
+}
+
+
+.auth-security-modal button {
+  width: 100%;
+
+  margin-top: 24px;
+
+  padding:
+    11px 18px;
+
+  border: 0;
+
+  border-radius: 9px;
+
+  background: #0056b3;
+
+  color: #ffffff;
+
+  font-size: 14px;
+
+  font-weight: 700;
+
+  cursor: pointer;
+
+  transition:
+    background
+    0.2s ease;
+}
+
+
+.auth-security-modal button:hover {
+  background: #00428a;
+}
+
+
+.auth-security-modal button:focus-visible {
+  outline:
+    3px solid
+    rgba(0, 86, 179, 0.25);
+
+  outline-offset: 2px;
+}
+
+
+@keyframes authSecurityModalOpen {
+
+  from {
+    opacity: 0;
+
+    transform:
+      translateY(8px)
+      scale(0.97);
+  }
+
+
+  to {
+    opacity: 1;
+
+    transform:
+      translateY(0)
+      scale(1);
+  }
+}
+
+
+@media (
+  max-width: 480px
+) {
+
+  .auth-security-modal {
+    padding:
+      26px 20px;
+  }
+}
+/* 로그인 제한 남은 시간 */
+.auth-security-timer {
+  margin: 20px 0 14px;
+
+  font-size: 38px;
+
+  font-weight: 800;
+
+  letter-spacing: 2px;
+
+  color: #0056b3;
+}
+
+
+/* 제한 중 버튼 */
+.auth-security-modal button:disabled {
+  background: #aebdca;
+
+  cursor: not-allowed;
+}

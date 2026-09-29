@@ -1,0 +1,53 @@
+spring:
+  datasource:
+    # 공개 데모용 Oracle 스냅샷 DB 접속 정보는 배포 환경변수로만 주입한다.
+    url: ${EDUSCOPE_DB_URL}
+    username: ${EDUSCOPE_DB_USERNAME}
+    password: ${EDUSCOPE_DB_PASSWORD}
+    driver-class-name: oracle.jdbc.OracleDriver
+
+  jpa:
+    hibernate:
+      ddl-auto: none
+    open-in-view: false
+
+  devtools:
+    restart:
+      enabled: false
+
+server:
+  forward-headers-strategy: framework
+  servlet:
+    session:
+      cookie:
+        http-only: true
+        secure: true
+        same-site: lax
+
+springdoc:
+  api-docs:
+    enabled: false
+  swagger-ui:
+    enabled: false
+
+management:
+  endpoint:
+    health:
+      show-details: never
+  endpoints:
+    web:
+      exposure:
+        include: health
+
+eduscope:
+  signup:
+    # 공개 DB에 임의 사용자가 계속 생성되는 것을 막는다.
+    enabled: false
+
+logging:
+  file:
+    name: ${EDUSCOPE_LOG_FILE:/tmp/eduscope-web.log}
+  level:
+    root: INFO
+    com.eduscope.web: INFO
+    org.hibernate.SQL: WARN

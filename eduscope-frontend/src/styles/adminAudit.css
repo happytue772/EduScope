@@ -1,0 +1,298 @@
+.admin-audit-page {
+  padding: 28px 32px 45px;
+}
+
+
+.admin-audit-header {
+  margin-bottom: 20px;
+}
+
+
+.admin-audit-header p {
+  margin: 0;
+  color: #6f879a;
+  font-size: 12px;
+}
+
+
+.admin-audit-header h1 {
+  margin: 5px 0;
+  color: #153f68;
+  font-size: 28px;
+}
+
+
+.admin-audit-header span {
+  color: #617b93;
+  font-size: 12px;
+}
+
+
+.admin-audit-summary {
+  display: grid;
+
+  grid-template-columns:
+    repeat(4, minmax(0, 1fr));
+
+  gap: 14px;
+
+  margin-bottom: 18px;
+}
+
+
+.admin-audit-summary article {
+  padding: 20px;
+
+  border-radius: 15px;
+
+  background: #ffffff;
+}
+
+
+.admin-audit-summary span {
+  display: block;
+
+  color: #71879a;
+
+  font-size: 11px;
+}
+
+
+.admin-audit-summary strong {
+  display: block;
+
+  margin-top: 8px;
+
+  color: #17456e;
+
+  font-size: 24px;
+}
+
+
+.admin-audit-filter {
+  display: flex;
+
+  gap: 12px;
+
+  margin-bottom: 18px;
+
+  padding: 16px;
+
+  border-radius: 15px;
+
+  background: #ffffff;
+}
+
+
+.admin-audit-filter input,
+.admin-audit-filter select {
+  height: 40px;
+
+  padding: 0 12px;
+
+  border:
+    1px solid #cbddea;
+
+  border-radius: 9px;
+
+  background: #ffffff;
+}
+
+
+.admin-audit-filter input {
+  flex: 1;
+}
+
+
+.admin-audit-panel {
+  padding: 22px;
+
+  border-radius: 17px;
+
+  background: #ffffff;
+}
+
+
+.admin-audit-table-wrapper {
+  overflow-x: auto;
+}
+
+
+.admin-audit-table-wrapper table {
+  width: 100%;
+
+  border-collapse: collapse;
+
+  font-size: 12px;
+}
+
+
+.admin-audit-table-wrapper th,
+.admin-audit-table-wrapper td {
+  padding: 12px 10px;
+
+  border-bottom:
+    1px solid #e1ebf3;
+
+  text-align: left;
+
+  vertical-align: top;
+}
+
+
+.admin-audit-table-wrapper th {
+  background: #eef6fc;
+
+  color: #315a7d;
+
+  white-space: nowrap;
+}
+
+
+.audit-user-id {
+  margin-top: 3px;
+
+  color: #8797a4;
+
+  font-size: 10px;
+}
+
+
+.audit-action {
+  display: inline-block;
+
+  padding: 4px 8px;
+
+  border-radius: 7px;
+
+  background: #edf3f8;
+
+  font-size: 10px;
+
+  font-weight: 700;
+}
+
+
+.audit-action.login {
+  background: #e8f6ed;
+
+  color: #31734b;
+}
+
+
+.audit-action.role_change {
+  background: #ebf0ff;
+
+  color: #4662a1;
+}
+
+
+.audit-uri {
+  min-width: 190px;
+
+  word-break: break-all;
+}
+
+
+.audit-description {
+  min-width: 260px;
+
+  white-space: normal;
+
+  line-height: 1.5;
+}
+
+
+.admin-audit-error {
+  margin-bottom: 15px;
+
+  padding: 14px;
+
+  border-radius: 10px;
+
+  background: #fff1f1;
+
+  color: #984949;
+}
+
+
+.admin-audit-pagination {
+  display: flex;
+
+  justify-content: center;
+
+  align-items: center;
+
+  gap: 14px;
+
+  margin-top: 20px;
+}
+
+
+.admin-audit-pagination button {
+  padding: 8px 14px;
+
+  border:
+    1px solid #c7d9e8;
+
+  border-radius: 8px;
+
+  background: #ffffff;
+
+  color: #315d80;
+
+  cursor: pointer;
+}
+
+
+.admin-audit-pagination button:disabled {
+  opacity: 0.45;
+
+  cursor: default;
+}
+
+
+.admin-audit-pagination span {
+  color: #61788b;
+
+  font-size: 12px;
+
+  font-weight: 700;
+}
+
+
+@media (max-width: 900px) {
+
+  .admin-audit-summary {
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
+  }
+
+}
+
+
+@media (max-width: 600px) {
+
+  .admin-audit-page {
+    padding: 18px 14px 30px;
+  }
+
+
+  .admin-audit-summary {
+    grid-template-columns: 1fr;
+  }
+
+
+  .admin-audit-filter {
+    flex-direction: column;
+  }
+
+}
+/* 조회 결과가 없을 때 */
+.admin-audit-empty {
+  padding: 30px !important;
+
+  text-align: center !important;
+
+  color: #7b8e9e;
+}

@@ -1,0 +1,1541 @@
+/* ============================================================
+   EduScope Premium Login
+   기존 auth.css와 분리하여 로그인 화면만 고급화한다.
+   ============================================================ */
+
+
+/* =========================
+   전체 화면
+   ========================= */
+
+.login-premium-page {
+  position: relative;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  min-height: 100vh;
+
+  padding: 36px;
+
+  overflow: hidden;
+
+  background:
+    radial-gradient(
+      circle at 15% 20%,
+      rgba(42, 122, 255, 0.28),
+      transparent 30%
+    ),
+    radial-gradient(
+      circle at 85% 20%,
+      rgba(79, 70, 229, 0.22),
+      transparent 28%
+    ),
+    radial-gradient(
+      circle at 60% 90%,
+      rgba(0, 199, 255, 0.17),
+      transparent 30%
+    ),
+    linear-gradient(
+      135deg,
+      #061321 0%,
+      #0a1d32 48%,
+      #071827 100%
+    );
+
+  color: #ffffff;
+}
+
+
+/* =========================
+   배경 Grid
+   ========================= */
+
+.login-grid-background {
+  position: absolute;
+
+  inset: 0;
+
+  opacity: 0.1;
+
+  background-image:
+    linear-gradient(
+      rgba(255, 255, 255, 0.18) 1px,
+      transparent 1px
+    ),
+    linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0.18) 1px,
+      transparent 1px
+    );
+
+  background-size:
+    55px 55px;
+
+  mask-image:
+    linear-gradient(
+      to bottom,
+      rgba(0, 0, 0, 0.8),
+      transparent
+    );
+
+  pointer-events: none;
+}
+
+
+/* =========================
+   움직이는 배경 Orb
+   ========================= */
+
+.login-orb {
+  position: absolute;
+
+  border-radius: 50%;
+
+  filter: blur(4px);
+
+  pointer-events: none;
+}
+
+
+.login-orb-one {
+  width: 420px;
+
+  height: 420px;
+
+  top: -160px;
+
+  left: -120px;
+
+  background:
+    radial-gradient(
+      circle,
+      rgba(38, 142, 255, 0.26),
+      rgba(38, 142, 255, 0)
+    );
+
+  animation:
+    loginOrbFloatOne
+    10s ease-in-out
+    infinite;
+}
+
+
+.login-orb-two {
+  width: 500px;
+
+  height: 500px;
+
+  right: -220px;
+
+  bottom: -180px;
+
+  background:
+    radial-gradient(
+      circle,
+      rgba(70, 70, 255, 0.25),
+      rgba(70, 70, 255, 0)
+    );
+
+  animation:
+    loginOrbFloatTwo
+    13s ease-in-out
+    infinite;
+}
+
+
+.login-orb-three {
+  width: 280px;
+
+  height: 280px;
+
+  top: 24%;
+
+  right: 32%;
+
+  background:
+    radial-gradient(
+      circle,
+      rgba(0, 199, 255, 0.15),
+      rgba(0, 199, 255, 0)
+    );
+
+  animation:
+    loginOrbFloatThree
+    8s ease-in-out
+    infinite;
+}
+
+
+/* =========================
+   메인 Container
+   ========================= */
+
+.login-premium-container {
+  position: relative;
+
+  z-index: 2;
+
+  display: grid;
+
+  grid-template-columns:
+    1.12fr
+    0.88fr;
+
+  width: min(
+    1180px,
+    100%
+  );
+
+  min-height: 680px;
+
+  border: 1px solid
+    rgba(255, 255, 255, 0.11);
+
+  border-radius: 30px;
+
+  overflow: hidden;
+
+  background:
+    rgba(9, 27, 45, 0.62);
+
+  box-shadow:
+    0 40px 100px
+    rgba(0, 0, 0, 0.35);
+
+  backdrop-filter:
+    blur(22px);
+}
+
+
+/* =========================
+   왼쪽 Hero
+   ========================= */
+
+.login-hero {
+  position: relative;
+
+  display: flex;
+
+  flex-direction: column;
+
+  justify-content: space-between;
+
+  padding:
+    58px
+    62px;
+
+  background:
+    linear-gradient(
+      145deg,
+      rgba(16, 56, 91, 0.76),
+      rgba(11, 36, 61, 0.42)
+    );
+}
+
+
+.login-hero::after {
+  content: '';
+
+  position: absolute;
+
+  width: 420px;
+
+  height: 420px;
+
+  right: -160px;
+
+  bottom: -190px;
+
+  border: 1px solid
+    rgba(255, 255, 255, 0.09);
+
+  border-radius: 50%;
+
+  box-shadow:
+    0 0 0 45px
+      rgba(255, 255, 255, 0.025),
+    0 0 0 90px
+      rgba(255, 255, 255, 0.018);
+}
+
+
+.login-brand-badge {
+  display: inline-flex;
+
+  align-items: center;
+
+  gap: 10px;
+
+  width: fit-content;
+
+  padding:
+    10px
+    16px;
+
+  border: 1px solid
+    rgba(255, 255, 255, 0.14);
+
+  border-radius: 999px;
+
+  background:
+    rgba(255, 255, 255, 0.06);
+
+  font-size: 15px;
+
+  font-weight: 800;
+
+  letter-spacing: 0.7px;
+}
+
+
+.login-brand-dot {
+  width: 8px;
+
+  height: 8px;
+
+  border-radius: 50%;
+
+  background: #4ed8ff;
+
+  box-shadow:
+    0 0 14px
+    rgba(78, 216, 255, 0.9);
+}
+
+
+.login-hero-content {
+  position: relative;
+
+  z-index: 2;
+}
+
+
+.login-eyebrow {
+  margin:
+    0
+    0
+    18px;
+
+  color:
+    #7fceff;
+
+  font-size: 14px;
+
+  font-weight: 700;
+
+  letter-spacing: 1.4px;
+}
+
+
+.login-hero h1 {
+  margin: 0;
+
+  max-width: 600px;
+
+  font-size:
+    clamp(
+      42px,
+      5vw,
+      68px
+    );
+
+  line-height: 1.08;
+
+  letter-spacing: -2.8px;
+}
+
+
+.login-hero h1 span {
+  display: block;
+
+  margin-top: 10px;
+
+  background:
+    linear-gradient(
+      90deg,
+      #66d7ff,
+      #7f9cff,
+      #b9c8ff
+    );
+
+  -webkit-background-clip:
+    text;
+
+  background-clip:
+    text;
+
+  color:
+    transparent;
+}
+
+
+.login-hero-description {
+  max-width: 540px;
+
+  margin:
+    26px
+    0
+    0;
+
+  color:
+    rgba(227, 239, 249, 0.72);
+
+  font-size: 16px;
+
+  line-height: 1.85;
+}
+
+
+.login-tech-row {
+  display: flex;
+
+  flex-wrap: wrap;
+
+  gap: 10px;
+
+  margin-top: 34px;
+}
+
+
+.login-tech-row span {
+  padding:
+    9px
+    14px;
+
+  border: 1px solid
+    rgba(255, 255, 255, 0.1);
+
+  border-radius: 10px;
+
+  background:
+    rgba(255, 255, 255, 0.05);
+
+  color:
+    rgba(235, 246, 255, 0.86);
+
+  font-size: 12px;
+
+  font-weight: 700;
+}
+
+
+.login-security-indicator {
+  display: flex;
+
+  align-items: center;
+
+  gap: 10px;
+
+  color:
+    rgba(220, 235, 247, 0.7);
+
+  font-size: 12px;
+}
+
+
+.login-security-pulse {
+  width: 8px;
+
+  height: 8px;
+
+  border-radius: 50%;
+
+  background: #36d399;
+
+  box-shadow:
+    0 0 0
+      rgba(54, 211, 153, 0.55);
+
+  animation:
+    loginSecurityPulse
+    2s infinite;
+}
+
+
+/* =========================
+   오른쪽 Login Panel
+   ========================= */
+
+.login-panel {
+  position: relative;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  padding:
+    50px
+    46px;
+
+  background:
+    rgba(5, 18, 31, 0.48);
+}
+
+
+.login-panel-glow {
+  position: absolute;
+
+  width: 360px;
+
+  height: 360px;
+
+  border-radius: 50%;
+
+  background:
+    radial-gradient(
+      circle,
+      rgba(34, 137, 255, 0.2),
+      transparent 68%
+    );
+
+  filter:
+    blur(15px);
+
+  pointer-events: none;
+}
+
+
+.login-card-premium {
+  position: relative;
+
+  z-index: 2;
+
+  width: 100%;
+
+  max-width: 410px;
+
+  padding:
+    34px;
+
+  border: 1px solid
+    rgba(255, 255, 255, 0.13);
+
+  border-radius: 24px;
+
+  background:
+    linear-gradient(
+      145deg,
+      rgba(255, 255, 255, 0.12),
+      rgba(255, 255, 255, 0.055)
+    );
+
+  box-shadow:
+    0 25px 70px
+    rgba(0, 0, 0, 0.25);
+
+  backdrop-filter:
+    blur(24px);
+}
+
+
+.login-card-premium::before {
+  content: '';
+
+  position: absolute;
+
+  inset: 0;
+
+  border-radius: inherit;
+
+  padding: 1px;
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(118, 211, 255, 0.38),
+      transparent 35%,
+      transparent 70%,
+      rgba(109, 117, 255, 0.22)
+    );
+
+  pointer-events: none;
+}
+
+
+.login-card-top {
+  display: flex;
+
+  align-items: flex-start;
+
+  justify-content: space-between;
+
+  gap: 20px;
+}
+
+
+.login-card-label {
+  margin:
+    0
+    0
+    7px;
+
+  color:
+    #78cfff;
+
+  font-size: 16px;
+
+  font-weight: 800;
+
+  letter-spacing: 1px;
+}
+
+
+.login-card-top h2 {
+  margin: 0;
+
+  color: #ffffff;
+
+  font-size: 31px;
+
+  letter-spacing: -1px;
+}
+
+
+.login-lock-badge {
+  display: flex;
+
+  align-items: center;
+
+  gap: 7px;
+
+  padding:
+    7px
+    10px;
+
+  border-radius: 999px;
+
+  background:
+    rgba(42, 202, 145, 0.1);
+
+  color:
+    #77e4ba;
+
+  font-size: 11px;
+
+  font-weight: 800;
+}
+
+
+.login-lock-dot {
+  width: 6px;
+
+  height: 6px;
+
+  border-radius: 50%;
+
+  background: #43dfaa;
+}
+
+
+.login-card-description {
+  margin:
+    14px
+    0
+    28px;
+
+  color:
+    rgba(225, 237, 247, 0.65);
+
+  font-size: 13px;
+}
+
+
+/* =========================
+   입력 Form
+   ========================= */
+
+.login-premium-form {
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 20px;
+}
+
+
+.login-premium-form label {
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 9px;
+}
+
+
+.login-input-label {
+  color:
+    rgba(239, 247, 255, 0.84);
+
+  font-size: 12px;
+
+  font-weight: 700;
+}
+
+
+.login-input-wrapper {
+  position: relative;
+
+  display: flex;
+
+  align-items: center;
+}
+
+
+.login-input-icon {
+  position: absolute;
+
+  left: 16px;
+
+  z-index: 2;
+
+  color:
+    rgba(115, 200, 255, 0.8);
+
+  font-size: 9px;
+
+  pointer-events: none;
+}
+
+
+.login-input-wrapper input {
+  width: 100%;
+
+  box-sizing: border-box;
+
+  padding:
+    14px
+    16px
+    14px
+    43px;
+
+  border: 1px solid
+    rgba(255, 255, 255, 0.12);
+
+  border-radius: 13px;
+
+  outline: none;
+
+  background:
+    rgba(3, 18, 31, 0.52);
+
+  color: #ffffff;
+
+  font-size: 14px;
+
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    background 0.2s ease,
+    transform 0.2s ease;
+}
+
+
+.login-input-wrapper input::placeholder {
+  color:
+    rgba(195, 215, 230, 0.37);
+}
+
+
+.login-input-wrapper input:focus {
+  border-color:
+    rgba(73, 174, 255, 0.75);
+
+  background:
+    rgba(5, 25, 42, 0.72);
+
+  box-shadow:
+    0 0 0 4px
+    rgba(45, 146, 255, 0.11);
+
+  transform:
+    translateY(-1px);
+}
+
+
+/* =========================
+   오류 메시지
+   ========================= */
+
+.login-error-box {
+  display: flex;
+
+  align-items: center;
+
+  gap: 10px;
+
+  padding:
+    11px
+    13px;
+
+  border: 1px solid
+    rgba(255, 92, 110, 0.25);
+
+  border-radius: 11px;
+
+  background:
+    rgba(255, 65, 90, 0.08);
+
+  color:
+    #ffadb8;
+
+  font-size: 12px;
+}
+
+
+.login-error-symbol {
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  width: 20px;
+
+  height: 20px;
+
+  border-radius: 50%;
+
+  background:
+    rgba(255, 92, 110, 0.13);
+
+  font-weight: 900;
+}
+
+
+/* =========================
+   로그인 버튼
+   ========================= */
+
+.login-submit-button {
+  position: relative;
+
+  width: 100%;
+
+  min-height: 48px;
+
+  margin-top: 3px;
+
+  overflow: hidden;
+
+  border: 0;
+
+  border-radius: 13px;
+
+  background:
+    linear-gradient(
+      100deg,
+      #1677ff,
+      #3267ed,
+      #605af7
+    );
+
+  color: #ffffff;
+
+  font-size: 14px;
+
+  font-weight: 800;
+
+  cursor: pointer;
+
+  box-shadow:
+    0 14px 32px
+    rgba(30, 106, 255, 0.28);
+
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+
+.login-submit-button:hover:not(:disabled) {
+  transform:
+    translateY(-2px);
+
+  box-shadow:
+    0 18px 38px
+    rgba(30, 106, 255, 0.4);
+}
+
+
+.login-submit-button:active:not(:disabled) {
+  transform:
+    translateY(0);
+}
+
+
+.login-submit-button:disabled {
+  opacity: 0.6;
+
+  cursor: not-allowed;
+}
+
+
+.login-button-shine {
+  position: absolute;
+
+  top: 0;
+
+  left: -130%;
+
+  width: 90%;
+
+  height: 100%;
+
+  background:
+    linear-gradient(
+      90deg,
+      transparent,
+      rgba(255, 255, 255, 0.18),
+      transparent
+    );
+
+  transform:
+    skewX(-20deg);
+
+  animation:
+    loginButtonShine
+    4.2s infinite;
+}
+
+
+/* =========================
+   Loading
+   ========================= */
+
+.login-loading-text {
+  display: inline-flex;
+
+  align-items: center;
+
+  gap: 9px;
+}
+
+
+.login-spinner {
+  width: 14px;
+
+  height: 14px;
+
+  border: 2px solid
+    rgba(255, 255, 255, 0.35);
+
+  border-top-color:
+    #ffffff;
+
+  border-radius: 50%;
+
+  animation:
+    loginSpin
+    0.7s linear
+    infinite;
+}
+
+
+/* =========================
+   가입 영역
+   ========================= */
+
+.login-divider {
+  display: flex;
+
+  align-items: center;
+
+  gap: 13px;
+
+  margin:
+    27px
+    0
+    18px;
+
+  color:
+    rgba(207, 223, 235, 0.4);
+
+  font-size: 10px;
+}
+
+
+.login-divider span {
+  flex: 1;
+
+  height: 1px;
+
+  background:
+    rgba(255, 255, 255, 0.09);
+}
+
+
+.login-signup-area {
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  gap: 7px;
+
+  color:
+    rgba(218, 233, 244, 0.6);
+
+  font-size: 12px;
+}
+
+
+.login-signup-area a {
+  color:
+    #73c7ff;
+
+  font-weight: 800;
+
+  text-decoration: none;
+}
+
+
+.login-signup-area a:hover {
+  text-decoration: underline;
+}
+
+
+.login-card-footer {
+  margin-top: 28px;
+
+  padding-top: 19px;
+
+  border-top: 1px solid
+    rgba(255, 255, 255, 0.07);
+
+  color:
+    rgba(191, 211, 225, 0.38);
+
+  font-size: 10px;
+
+  text-align: center;
+}
+
+
+/* ============================================================
+   로그인 제한 Modal
+   ============================================================ */
+
+.login-security-backdrop {
+  position: fixed;
+
+  inset: 0;
+
+  z-index: 9999;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  padding: 20px;
+
+  background:
+    rgba(1, 10, 19, 0.75);
+
+  backdrop-filter:
+    blur(12px);
+}
+
+
+.login-security-modal {
+  position: relative;
+
+  width: min(
+    420px,
+    100%
+  );
+
+  overflow: hidden;
+
+  padding:
+    34px;
+
+  border: 1px solid
+    rgba(255, 255, 255, 0.13);
+
+  border-radius: 24px;
+
+  background:
+    linear-gradient(
+      145deg,
+      rgba(17, 38, 58, 0.98),
+      rgba(8, 25, 41, 0.98)
+    );
+
+  box-shadow:
+    0 35px 90px
+    rgba(0, 0, 0, 0.5);
+
+  color: #ffffff;
+
+  text-align: center;
+
+  animation:
+    loginModalOpen
+    0.24s ease-out;
+}
+
+
+.login-security-modal-glow {
+  position: absolute;
+
+  width: 230px;
+
+  height: 230px;
+
+  top: -150px;
+
+  left: 50%;
+
+  transform:
+    translateX(-50%);
+
+  border-radius: 50%;
+
+  background:
+    rgba(42, 139, 255, 0.25);
+
+  filter:
+    blur(35px);
+}
+
+
+.login-security-warning {
+  position: relative;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  width: 58px;
+
+  height: 58px;
+
+  margin:
+    0 auto
+    20px;
+
+  border: 1px solid
+    rgba(255, 184, 77, 0.35);
+
+  border-radius: 18px;
+
+  background:
+    rgba(255, 169, 47, 0.1);
+
+  color:
+    #ffc46f;
+
+  font-size: 28px;
+
+  font-weight: 900;
+
+  box-shadow:
+    0 0 30px
+    rgba(255, 171, 56, 0.12);
+}
+
+
+.login-security-modal h2 {
+  position: relative;
+
+  margin:
+    0
+    0
+    14px;
+
+  font-size: 22px;
+}
+
+
+.login-security-modal p {
+  position: relative;
+
+  margin: 0;
+
+  color:
+    rgba(223, 236, 247, 0.65);
+
+  font-size: 13px;
+
+  line-height: 1.7;
+}
+
+
+.login-countdown {
+  position: relative;
+
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 5px;
+
+  margin:
+    25px
+    0;
+
+  padding:
+    18px;
+
+  border: 1px solid
+    rgba(83, 171, 255, 0.22);
+
+  border-radius: 16px;
+
+  background:
+    rgba(30, 117, 205, 0.08);
+}
+
+
+.login-countdown-label {
+  color:
+    rgba(190, 220, 243, 0.54);
+
+  font-size: 10px;
+}
+
+
+.login-countdown strong {
+  color:
+    #79d0ff;
+
+  font-size: 42px;
+
+  letter-spacing: 4px;
+
+  text-shadow:
+    0 0 25px
+    rgba(69, 175, 255, 0.3);
+}
+
+
+.login-countdown-ready strong {
+  color:
+    #56e2ad;
+}
+
+
+.login-security-help {
+  color:
+    rgba(207, 222, 235, 0.46)
+    !important;
+}
+
+
+.login-security-button {
+  width: 100%;
+
+  margin-top: 25px;
+
+  padding:
+    13px
+    18px;
+
+  border: 0;
+
+  border-radius: 12px;
+
+  background:
+    linear-gradient(
+      90deg,
+      #187af8,
+      #525dec
+    );
+
+  color: #ffffff;
+
+  font-weight: 800;
+
+  cursor: pointer;
+}
+
+
+.login-security-button:disabled {
+  background:
+    rgba(255, 255, 255, 0.09);
+
+  color:
+    rgba(255, 255, 255, 0.38);
+
+  cursor: not-allowed;
+}
+
+
+/* ============================================================
+   Animation
+   ============================================================ */
+
+@keyframes loginOrbFloatOne {
+
+  0%,
+  100% {
+    transform:
+      translate(0,0);}
+
+  50% {
+    transform:
+      translate(50px,35px);
+  }
+}
+
+
+@keyframes loginOrbFloatTwo {
+
+  0%,
+  100% {
+    transform:
+      translate(
+        0,
+        0
+      );
+  }
+
+  50% {
+    transform:
+      translate(
+        -45px,
+        -30px
+      );
+  }
+}
+
+
+@keyframes loginOrbFloatThree {
+
+  0%,
+  100% {
+    transform:
+      translateY(
+        0
+      );
+  }
+
+  50% {
+    transform:
+      translateY(
+        -25px
+      );
+  }
+}
+
+
+@keyframes loginSecurityPulse {
+
+  0% {
+    box-shadow:
+      0 0 0 0
+      rgba(54, 211, 153, 0.45);
+  }
+
+  70% {
+    box-shadow:
+      0 0 0 9px
+      rgba(54, 211, 153, 0);
+  }
+
+  100% {
+    box-shadow:
+      0 0 0 0
+      rgba(54, 211, 153, 0);
+  }
+}
+
+
+@keyframes loginButtonShine {
+
+  0% {
+    left: -130%;
+  }
+
+  45% {
+    left: 160%;
+  }
+
+  100% {
+    left: 160%;
+  }
+}
+
+
+@keyframes loginSpin {
+
+  to {
+    transform:
+      rotate(
+        360deg
+      );
+  }
+}
+
+
+@keyframes loginModalOpen {
+
+  from {
+    opacity: 0;
+
+    transform:
+      translateY(
+        14px
+      )
+      scale(
+        0.97
+      );
+  }
+
+  to {
+    opacity: 1;
+
+    transform:
+      translateY(
+        0
+      )
+      scale(
+        1
+      );
+  }
+}
+
+
+/* ============================================================
+   반응형
+   ============================================================ */
+
+@media (
+  max-width: 900px
+) {
+
+  .login-premium-page {
+    padding: 22px;
+  }
+
+
+  .login-premium-container {
+    grid-template-columns:
+      1fr;
+
+    max-width:
+      520px;
+  }
+
+
+  .login-hero {
+    min-height:
+      320px;
+
+    padding:
+      38px;
+  }
+
+
+  .login-hero-footer {
+    margin-top:
+      38px;
+  }
+
+
+  .login-hero h1 {
+    font-size:
+      clamp(
+        38px,
+        9vw,
+        52px
+      );
+  }
+
+
+  .login-panel {
+    padding:
+      35px
+      28px;
+  }
+}
+
+
+@media (
+  max-width: 520px
+) {
+
+  .login-premium-page {
+    align-items:
+      flex-start;
+
+    padding:
+      14px;
+  }
+
+
+  .login-premium-container {
+    margin:
+      14px
+      0;
+
+    border-radius:
+      23px;
+  }
+
+
+  .login-hero {
+    padding:
+      30px
+      24px;
+  }
+
+
+  .login-hero-description {
+    font-size:
+      14px;
+  }
+
+
+  .login-panel {
+    padding:
+      25px
+      16px
+      30px;
+  }
+
+
+  .login-card-premium {
+    padding:
+      26px
+      21px;
+  }
+
+
+  .login-tech-row {
+    gap: 7px;
+  }
+
+
+  .login-countdown strong {
+    font-size:
+      35px;
+  }
+}
+
+
+/* 사용자가 움직임 감소를 설정한 경우 */
+@media (
+  prefers-reduced-motion: reduce
+) {
+
+  .login-orb,
+  .login-security-pulse,
+  .login-button-shine,
+  .login-spinner {
+
+    animation:
+      none;
+  }
+}

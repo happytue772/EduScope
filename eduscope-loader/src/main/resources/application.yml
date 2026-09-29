@@ -1,0 +1,33 @@
+spring:
+  datasource:
+    url: ${EDUSCOPE_DB_URL}
+    username: ${EDUSCOPE_DB_USERNAME}
+    password: ${EDUSCOPE_DB_PASSWORD}
+    driver-class-name: oracle.jdbc.OracleDriver
+
+  jpa:
+    hibernate:
+      ddl-auto: none
+    open-in-view: false
+
+  batch:
+    job:
+      enabled: true
+      name: dataQualityStatImportJob
+
+    jdbc:
+      initialize-schema: never
+
+eduscope:
+  input:
+    raw-path: ${EDUSCOPE_RAW_PATH}
+    analysis-path: ${EDUSCOPE_ANALYSIS_PATH}
+
+  dataset:
+    display-name: ${EDUSCOPE_DATASET_DISPLAY_NAME}
+    source-name: ${EDUSCOPE_DATASET_SOURCE_NAME}
+    dataset-version: ${EDUSCOPE_DATASET_VERSION}
+    schema-version: ${EDUSCOPE_SCHEMA_VERSION}
+    source-url: ${EDUSCOPE_DATASET_SOURCE_URL:}
+    description: ${EDUSCOPE_DATASET_DESCRIPTION:}
+    hdfs-base-path: /user/user/eduscope

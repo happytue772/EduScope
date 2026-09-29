@@ -1,0 +1,90 @@
+spring:
+  application:
+    name: eduscope-web
+
+  datasource:
+    url: ${EDUSCOPE_DB_URL:jdbc:oracle:thin:@localhost:1521/orcl}
+    username: ${EDUSCOPE_DB_USERNAME:eduscope}
+    password: ${EDUSCOPE_DB_PASSWORD:}
+    driver-class-name: oracle.jdbc.OracleDriver
+
+  jpa:
+    hibernate:
+      ddl-auto: none
+
+    open-in-view: false
+
+    properties:
+      hibernate:
+        format_sql: true
+
+
+server:
+  port: ${SERVER_PORT:8080}
+
+
+# =========================================================
+# Swagger / OpenAPI
+# =========================================================
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    operations-sorter: method
+    tags-sorter: alpha
+    display-request-duration: true
+  show-actuator: false
+
+
+# =========================================================
+# Application Logging
+# - Console怨??뚯씪???④퍡 湲곕줉
+# - 濡쒓렇 ?뚯씪? ?ш린/湲곌컙 湲곗??쇰줈 ?먮룞 ?쒗솚
+# =========================================================
+logging:
+  file:
+    name: ${EDUSCOPE_LOG_FILE:logs/eduscope-web.log}
+  level:
+    root: INFO
+    com.eduscope.web: ${EDUSCOPE_LOG_LEVEL:INFO}
+    org.hibernate.SQL: WARN
+  logback:
+    rollingpolicy:
+      file-name-pattern: ${LOG_FILE}.%d{yyyy-MM-dd}.%i.gz
+      max-file-size: 10MB
+      max-history: 30
+      total-size-cap: 1GB
+
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+
+
+# =========================================================
+# EduScope Hadoop SSH ?ㅽ뻾 ?ㅼ젙
+# =========================================================
+eduscope:
+  hadoop:
+
+    ssh:
+      # Windows ??VMware Ubuntu Host-only ?듭떊
+      host: ${EDUSCOPE_HADOOP_SSH_HOST:192.168.117.10}
+      port: ${EDUSCOPE_HADOOP_SSH_PORT:22}
+      user: ${EDUSCOPE_HADOOP_SSH_USER:user}
+
+      # Windows?먯꽌 ?앹꽦??SSH Private Key
+      private-key: ${EDUSCOPE_HADOOP_SSH_PRIVATE_KEY:${user.home}/.ssh/eduscope_vm_ed25519}
+
+    remote:
+      # Ubuntu EduScope ?꾩슜 Hadoop ?섍꼍 Script
+      env-script: ${EDUSCOPE_HADOOP_ENV_SCRIPT:/home/user/bigdata/user-eduscope-hadoop.sh}
+
+      # ?ㅼ젣 EduScope MapReduce JAR
+      jar: ${EDUSCOPE_HADOOP_JAR:/home/user/eduscope-app/eduscope-mapreduce-1.0.0-SNAPSHOT.jar}
+
+    # MapReduce 理쒕? ?ㅽ뻾?쒓컙
+    execution-timeout-minutes: ${EDUSCOPE_HADOOP_TIMEOUT_MINUTES:120}

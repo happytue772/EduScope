@@ -1,0 +1,39 @@
+services:
+  - type: web
+    name: eduscope-api
+    runtime: docker
+    plan: free
+    dockerfilePath: ./Dockerfile
+    healthCheckPath: /actuator/health
+    envVars:
+      - key: SPRING_PROFILES_ACTIVE
+        value: demo
+      - key: SERVER_PORT
+        value: 10000
+      - key: EDUSCOPE_DB_URL
+        sync: false
+      - key: EDUSCOPE_DB_USERNAME
+        sync: false
+      - key: EDUSCOPE_DB_PASSWORD
+        sync: false
+      - key: EDUSCOPE_LOG_FILE
+        value: /tmp/eduscope-web.log
+      - key: EDUSCOPE_LOG_LEVEL
+        value: INFO
+      - key: JAVA_OPTS
+        value: -XX:MaxRAMPercentage=70.0 -XX:+UseSerialGC
+      # DEMO_ADMIN은 실행 API가 403이므로 Hadoop 값은 사용되지 않는다.
+      - key: EDUSCOPE_HADOOP_SSH_HOST
+        value: disabled.invalid
+      - key: EDUSCOPE_HADOOP_SSH_PORT
+        value: 22
+      - key: EDUSCOPE_HADOOP_SSH_USER
+        value: disabled
+      - key: EDUSCOPE_HADOOP_SSH_PRIVATE_KEY
+        value: /tmp/disabled-key
+      - key: EDUSCOPE_HADOOP_ENV_SCRIPT
+        value: /tmp/disabled-hadoop-env.sh
+      - key: EDUSCOPE_HADOOP_JAR
+        value: /tmp/disabled-mapreduce.jar
+      - key: EDUSCOPE_HADOOP_TIMEOUT_MINUTES
+        value: 1

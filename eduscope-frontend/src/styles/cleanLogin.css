@@ -1,0 +1,3860 @@
+/* ============================================================
+   EduScope Clean Login
+   ------------------------------------------------------------
+   - Clean Lavender / White UI
+   - 동적 추상 UI Visual
+   - 외부 이미지/임의 데이터 사용 없음
+   - 기존 Login / CSRF / Session / Rate Limit 기능 유지
+   ============================================================ */
+
+
+/* ============================================================
+   1. Page
+   ============================================================ */
+
+.clean-login-page {
+  position:
+    relative;
+
+  display:
+    flex;
+
+  align-items:
+    center;
+
+  justify-content:
+    center;
+
+  min-height:
+    100vh;
+
+  padding:
+    34px;
+
+  box-sizing:
+    border-box;
+
+  overflow:
+    hidden;
+
+  background:
+    radial-gradient(
+      circle at 86% 8%,
+      rgba(193, 186, 255, 0.52),
+      transparent 29%
+    ),
+    radial-gradient(
+      circle at 10% 84%,
+      rgba(205, 229, 255, 0.56),
+      transparent 30%
+    ),
+    linear-gradient(
+      145deg,
+      #fafafd,
+      #f4f5fb 50%,
+      #f8f7fc
+    );
+
+  color:
+    #292d39;
+}
+
+
+/* ============================================================
+   2. Background
+   ============================================================ */
+
+.clean-login-grid {
+  position:
+    absolute;
+
+  inset:
+    0;
+
+  opacity:
+    0.22;
+
+  background-image:
+    radial-gradient(
+      circle,
+      rgba(117, 106, 221, 0.17) 1px,
+      transparent 1px
+    );
+
+  background-size:
+    27px 27px;
+
+  mask-image:
+    linear-gradient(
+      to bottom,
+      rgba(0, 0, 0, 0.4),
+      transparent 70%
+    );
+
+  pointer-events:
+    none;
+}
+
+
+.clean-login-orb {
+  position:
+    absolute;
+
+  border-radius:
+    50%;
+
+  pointer-events:
+    none;
+
+  filter:
+    blur(1px);
+}
+
+
+.clean-login-orb-one {
+  width:
+    280px;
+
+  height:
+    280px;
+
+  top:
+    -95px;
+
+  left:
+    15%;
+
+  background:
+    radial-gradient(
+      circle,
+      rgba(153, 143, 242, 0.25),
+      transparent 70%
+    );
+
+  animation:
+    cleanLoginOrbOne
+    11s ease-in-out
+    infinite;
+}
+
+
+.clean-login-orb-two {
+  width:
+    400px;
+
+  height:
+    400px;
+
+  right:
+    -130px;
+
+  bottom:
+    -170px;
+
+  background:
+    radial-gradient(
+      circle,
+      rgba(157, 198, 243, 0.28),
+      transparent 70%
+    );
+
+  animation:
+    cleanLoginOrbTwo
+    14s ease-in-out
+    infinite;
+}
+
+
+.clean-login-orb-three {
+  width:
+    180px;
+
+  height:
+    180px;
+
+  right:
+    34%;
+
+  top:
+    12%;
+
+  background:
+    radial-gradient(
+      circle,
+      rgba(221, 180, 229, 0.18),
+      transparent 72%
+    );
+
+  animation:
+    cleanLoginOrbThree
+    9s ease-in-out
+    infinite;
+}
+
+
+/* ============================================================
+   3. Main Shell
+   ============================================================ */
+
+.clean-login-shell {
+  position:
+    relative;
+
+  z-index:
+    2;
+
+  display:
+    grid;
+
+  grid-template-columns:
+    minmax(0, 1.08fr)
+    minmax(420px, 0.82fr);
+
+  width:
+    min(
+      1190px,
+      100%
+    );
+
+  min-height:
+    690px;
+
+  overflow:
+    hidden;
+
+  border:
+    1px solid
+    rgba(223, 224, 234, 0.93);
+
+  border-radius:
+    30px;
+
+  background:
+    rgba(255, 255, 255, 0.77);
+
+  box-shadow:
+    0 30px 80px
+    rgba(72, 76, 107, 0.11);
+
+  backdrop-filter:
+    blur(22px);
+}
+
+
+/* ============================================================
+   4. Visual Side
+   ============================================================ */
+
+.clean-login-visual {
+  position:
+    relative;
+
+  display:
+    flex;
+
+  flex-direction:
+    column;
+
+  min-width:
+    0;
+
+  padding:
+    46px 50px 34px;
+
+  box-sizing:
+    border-box;
+
+  overflow:
+    hidden;
+
+  background:
+    linear-gradient(
+      145deg,
+      rgba(249, 249, 253, 0.95),
+      rgba(242, 240, 255, 0.82)
+    );
+
+  border-right:
+    1px solid
+    rgba(226, 226, 237, 0.86);
+}
+
+
+.clean-login-brand {
+  position:
+    relative;
+
+  z-index:
+    4;
+
+  display:
+    flex;
+
+  align-items:
+    center;
+
+  gap:
+    12px;
+}
+
+
+.clean-login-brand-mark {
+  display:
+    grid;
+
+  place-items:
+    center;
+
+  width:
+    46px;
+
+  height:
+    46px;
+
+  border:
+    1px solid
+    #d8d4ff;
+
+  border-radius:
+    14px;
+
+  background:
+    #eeecff;
+
+  color:
+    #665bd7;
+
+  font-size:
+    18px;
+
+  font-weight:
+    900;
+
+  box-shadow:
+    0 10px 24px
+    rgba(116, 103, 238, 0.12);
+}
+
+
+.clean-login-brand strong {
+  display:
+    block;
+
+  color:
+    #292d39;
+
+  font-size:
+    19px;
+
+  font-weight:
+    900;
+
+  letter-spacing:
+    -0.4px;
+}
+
+
+.clean-login-brand span {
+  display:
+    block;
+
+  margin-top:
+    2px;
+
+  color:
+    #8a91a0;
+
+  font-size:
+    10px;
+
+  font-weight:
+    700;
+}
+
+
+.clean-login-copy {
+  position:
+    relative;
+
+  z-index:
+    4;
+
+  margin-top:
+    46px;
+
+  max-width:
+    530px;
+}
+
+
+.clean-login-eyebrow {
+  display:
+    block;
+
+  margin-bottom:
+    13px;
+
+  color:
+    #7b70df;
+
+  font-size:
+    10px;
+
+  font-weight:
+    900;
+
+  letter-spacing:
+    1.15px;
+}
+
+
+.clean-login-copy h1 {
+  margin:
+    0;
+
+  color:
+    #242833;
+
+  font-size:
+    clamp(
+      38px,
+      4.4vw,
+      57px
+    );
+
+  font-weight:
+    900;
+
+  line-height:
+    1.08;
+
+  letter-spacing:
+    -2.2px;
+}
+
+
+.clean-login-copy h1 span {
+  display:
+    block;
+
+  margin-top:
+    6px;
+
+  background:
+    linear-gradient(
+      90deg,
+      #7165df,
+      #8d7cec,
+      #789bd9
+    );
+
+  -webkit-background-clip:
+    text;
+
+  background-clip:
+    text;
+
+  color:
+    transparent;
+}
+
+
+.clean-login-copy p {
+  max-width:
+    500px;
+
+  margin:
+    22px 0 0;
+
+  color:
+    #707787;
+
+  font-size:
+    14px;
+
+  font-weight:
+    560;
+
+  line-height:
+    1.8;
+}
+
+
+/* ============================================================
+   5. Dynamic UI Visual
+   ============================================================ */
+
+.clean-ui-stage {
+  position:
+    relative;
+
+  flex:
+    1;
+
+  min-height:
+    315px;
+
+  margin-top:
+    24px;
+}
+
+
+/* Browser */
+
+.clean-ui-browser {
+  position:
+    absolute;
+
+  width:
+    73%;
+
+  height:
+    250px;
+
+  left:
+    13%;
+
+  top:
+    18px;
+
+  overflow:
+    hidden;
+
+  border:
+    1px solid
+    #e2e2eb;
+
+  border-radius:
+    19px;
+
+  background:
+    rgba(255, 255, 255, 0.95);
+
+  box-shadow:
+    0 22px 50px
+    rgba(75, 77, 110, 0.13);
+
+  animation:
+    cleanBrowserFloat
+    6.5s ease-in-out
+    infinite;
+}
+
+
+.clean-ui-browser-top {
+  display:
+    flex;
+
+  align-items:
+    center;
+
+  gap:
+    10px;
+
+  height:
+    34px;
+
+  padding:
+    0 12px;
+
+  border-bottom:
+    1px solid
+    #ececf2;
+
+  background:
+    #fbfbfd;
+}
+
+
+.clean-ui-browser-dots {
+  display:
+    flex;
+
+  gap:
+    5px;
+}
+
+
+.clean-ui-browser-dots i {
+  display:
+    block;
+
+  width:
+    6px;
+
+  height:
+    6px;
+
+  border-radius:
+    50%;
+
+  background:
+    #d8d9e2;
+}
+
+
+.clean-ui-browser-dots i:nth-child(1) {
+  background:
+    #e8a9b5;
+}
+
+
+.clean-ui-browser-dots i:nth-child(2) {
+  background:
+    #e8d1a0;
+}
+
+
+.clean-ui-browser-dots i:nth-child(3) {
+  background:
+    #a6d8c1;
+}
+
+
+.clean-ui-browser-address {
+  width:
+    42%;
+
+  height:
+    7px;
+
+  border-radius:
+    999px;
+
+  background:
+    #efeff4;
+}
+
+
+.clean-ui-browser-body {
+  display:
+    grid;
+
+  grid-template-columns:
+    52px 1fr;
+
+  height:
+    calc(100% - 34px);
+}
+
+
+.clean-ui-mini-sidebar {
+  display:
+    flex;
+
+  flex-direction:
+    column;
+
+  align-items:
+    center;
+
+  gap:
+    12px;
+
+  padding-top:
+    22px;
+
+  border-right:
+    1px solid
+    #eeeef3;
+
+  background:
+    #fafafe;
+}
+
+
+.clean-ui-mini-sidebar span {
+  display:
+    block;
+
+  width:
+    20px;
+
+  height:
+    20px;
+
+  border-radius:
+    7px;
+
+  background:
+    #eceafd;
+}
+
+
+.clean-ui-mini-sidebar span:first-child {
+  background:
+    #dbd6ff;
+}
+
+
+.clean-ui-dashboard {
+  padding:
+    21px;
+}
+
+
+.clean-ui-dashboard-title {
+  width:
+    36%;
+
+  height:
+    10px;
+
+  margin-bottom:
+    20px;
+
+  border-radius:
+    999px;
+
+  background:
+    #d8d7e2;
+}
+
+
+.clean-ui-card-row {
+  display:
+    grid;
+
+  grid-template-columns:
+    repeat(
+      3,
+      1fr
+    );
+
+  gap:
+    10px;
+}
+
+
+.clean-ui-card {
+  height:
+    54px;
+
+  border:
+    1px solid
+    #e8e7f0;
+
+  border-radius:
+    11px;
+
+  background:
+    linear-gradient(
+      145deg,
+      #f6f5ff,
+      #fbfbfd
+    );
+}
+
+
+.clean-ui-chart {
+  position:
+    relative;
+
+  height:
+    90px;
+
+  margin-top:
+    14px;
+
+  overflow:
+    hidden;
+
+  border:
+    1px solid
+    #ecebf2;
+
+  border-radius:
+    12px;
+
+  background:
+    #fbfbfe;
+}
+
+
+.clean-ui-chart::before,
+.clean-ui-chart::after {
+  content:
+    '';
+
+  position:
+    absolute;
+
+  left:
+    12px;
+
+  right:
+    12px;
+
+  height:
+    1px;
+
+  background:
+    #eeeeF4;
+}
+
+
+.clean-ui-chart::before {
+  top:
+    31%;
+}
+
+
+.clean-ui-chart::after {
+  top:
+    65%;
+}
+
+
+.clean-ui-chart-line {
+  position:
+    absolute;
+
+  height:
+    3px;
+
+  border-radius:
+    999px;
+
+  transform-origin:
+    left center;
+
+  animation:
+    cleanChartPulse
+    5s ease-in-out
+    infinite;
+}
+
+
+.clean-ui-chart-line.line-one {
+  width:
+    56%;
+
+  left:
+    15%;
+
+  top:
+    58%;
+
+  transform:
+    rotate(-8deg);
+
+  background:
+    linear-gradient(
+      90deg,
+      #a59bef,
+      #7f72e5
+    );
+}
+
+
+.clean-ui-chart-line.line-two {
+  width:
+    35%;
+
+  left:
+    48%;
+
+  top:
+    47%;
+
+  transform:
+    rotate(11deg);
+
+  background:
+    linear-gradient(
+      90deg,
+      #94b9e8,
+      #a9c9ef
+    );
+
+  animation-delay:
+    -1.4s;
+}
+
+
+/* Mobile */
+
+.clean-ui-mobile {
+  position:
+    absolute;
+
+  width:
+    112px;
+
+  height:
+    212px;
+
+  left:
+    2%;
+
+  bottom:
+    0;
+
+  z-index:
+    4;
+
+  padding:
+    17px 11px;
+
+  box-sizing:
+    border-box;
+
+  border:
+    1px solid
+    #e2e2eb;
+
+  border-radius:
+    22px;
+
+  background:
+    rgba(255, 255, 255, 0.96);
+
+  box-shadow:
+    0 19px 38px
+    rgba(77, 79, 110, 0.12);
+
+  animation:
+    cleanMobileFloat
+    7.2s ease-in-out
+    infinite;
+}
+
+
+.clean-ui-mobile-notch {
+  width:
+    32px;
+
+  height:
+    5px;
+
+  margin:
+    0 auto 20px;
+
+  border-radius:
+    999px;
+
+  background:
+    #e6e6ed;
+}
+
+
+.clean-ui-mobile-title {
+  width:
+    62%;
+
+  height:
+    8px;
+
+  margin-bottom:
+    13px;
+
+  border-radius:
+    999px;
+
+  background:
+    #ccc8f4;
+}
+
+
+.clean-ui-mobile-card {
+  height:
+    54px;
+
+  margin-bottom:
+    10px;
+
+  border-radius:
+    10px;
+
+  background:
+    #f1efff;
+}
+
+
+.clean-ui-mobile-card.small {
+  height:
+    34px;
+
+  background:
+    #eef5fc;
+}
+
+
+/* Palette */
+
+.clean-ui-palette {
+  position:
+    absolute;
+
+  right:
+    2%;
+
+  bottom:
+    7px;
+
+  z-index:
+    5;
+
+  display:
+    flex;
+
+  gap:
+    7px;
+
+  padding:
+    12px;
+
+  border:
+    1px solid
+    #e4e4eb;
+
+  border-radius:
+    14px;
+
+  background:
+    rgba(255, 255, 255, 0.95);
+
+  box-shadow:
+    0 15px 30px
+    rgba(75, 77, 109, 0.10);
+
+  animation:
+    cleanPaletteFloat
+    7.8s ease-in-out
+    infinite;
+}
+
+
+.clean-ui-palette span {
+  display:
+    block;
+
+  width:
+    24px;
+
+  height:
+    31px;
+
+  border-radius:
+    7px;
+}
+
+
+.palette-one {
+  background:
+    #8073e8;
+}
+
+
+.palette-two {
+  background:
+    #dca9ce;
+}
+
+
+.palette-three {
+  background:
+    #a9c8ea;
+}
+
+
+.palette-four {
+  background:
+    #b7d8cb;
+}
+
+
+/* Floating Cards */
+
+.clean-ui-float-card {
+  position:
+    absolute;
+
+  z-index:
+    6;
+
+  display:
+    grid;
+
+  place-items:
+    center;
+
+  width:
+    58px;
+
+  height:
+    58px;
+
+  border:
+    1px solid
+    #e4e3eb;
+
+  border-radius:
+    16px;
+
+  background:
+    rgba(255, 255, 255, 0.95);
+
+  color:
+    #7166d5;
+
+  font-size:
+    12px;
+
+  font-weight:
+    900;
+
+  box-shadow:
+    0 16px 34px
+    rgba(76, 78, 109, 0.10);
+}
+
+
+.clean-ui-float-card-one {
+  right:
+    1%;
+
+  top:
+    0;
+
+  animation:
+    cleanFloatOne
+    6s ease-in-out
+    infinite;
+}
+
+
+.clean-ui-float-card-two {
+  right:
+    10%;
+
+  top:
+    83px;
+
+  width:
+    48px;
+
+  height:
+    48px;
+
+  color:
+    #7297c4;
+
+  animation:
+    cleanFloatTwo
+    7s ease-in-out
+    infinite;
+}
+
+
+.clean-login-visual-footer {
+  position:
+    relative;
+
+  z-index:
+    4;
+
+  display:
+    flex;
+
+  flex-wrap:
+    wrap;
+
+  gap:
+    7px;
+
+  margin-top:
+    14px;
+}
+
+
+.clean-login-visual-footer span {
+  padding:
+    6px 9px;
+
+  border:
+    1px solid
+    #e2e2ec;
+
+  border-radius:
+    999px;
+
+  background:
+    rgba(255, 255, 255, 0.68);
+
+  color:
+    #7a8190;
+
+  font-size:
+    9px;
+
+  font-weight:
+    800;
+}
+
+
+/* ============================================================
+   6. Login Panel
+   ============================================================ */
+
+.clean-login-panel {
+  display:
+    flex;
+
+  align-items:
+    center;
+
+  justify-content:
+    center;
+
+  padding:
+    54px 46px;
+
+  box-sizing:
+    border-box;
+
+  background:
+    rgba(255, 255, 255, 0.79);
+}
+
+
+.clean-login-card {
+  width:
+    100%;
+
+  max-width:
+    390px;
+}
+
+
+.clean-login-card-label {
+  display:
+    block;
+
+  margin-bottom:
+    9px;
+
+  color:
+    #786cdf;
+
+  font-size:
+    10px;
+
+  font-weight:
+    900;
+
+  letter-spacing:
+    1.1px;
+}
+
+
+.clean-login-card-heading h2 {
+  margin:
+    0;
+
+  color:
+    #282c38;
+
+  font-size:
+    33px;
+
+  font-weight:
+    900;
+
+  letter-spacing:
+    -1px;
+}
+
+
+.clean-login-card-heading p {
+  margin:
+    10px 0 0;
+
+  color:
+    #858c9b;
+
+  font-size:
+    12px;
+
+  line-height:
+    1.6;
+}
+
+
+/* Form */
+
+.clean-login-form {
+  display:
+    flex;
+
+  flex-direction:
+    column;
+
+  gap:
+    18px;
+
+  margin-top:
+    31px;
+}
+
+
+.clean-login-form label {
+  display:
+    flex;
+
+  flex-direction:
+    column;
+
+  gap:
+    8px;
+}
+
+
+.clean-login-form label > span {
+  color:
+    #5d6474;
+
+  font-size:
+    11px;
+
+  font-weight:
+    850;
+}
+
+
+.clean-login-input {
+  position:
+    relative;
+
+  display:
+    flex;
+
+  align-items:
+    center;
+}
+
+
+.clean-login-input-symbol {
+  position:
+    absolute;
+
+  left:
+    14px;
+
+  z-index:
+    2;
+
+  display:
+    grid;
+
+  place-items:
+    center;
+
+  width:
+    26px;
+
+  height:
+    26px;
+
+  border-radius:
+    8px;
+
+  background:
+    #f0eeff;
+
+  color:
+    #7166db;
+
+  font-size:
+    8px;
+
+  font-weight:
+    900;
+
+  pointer-events:
+    none;
+}
+
+
+.clean-login-input input {
+  width:
+    100%;
+
+  height:
+    48px;
+
+  padding:
+    0 15px 0 51px;
+
+  box-sizing:
+    border-box;
+
+  border:
+    1px solid
+    #dfe1e9;
+
+  border-radius:
+    12px;
+
+  outline:
+    none;
+
+  background:
+    #ffffff;
+
+  color:
+    #303541;
+
+  font-size:
+    13px;
+
+  font-weight:
+    600;
+
+  transition:
+    border-color 170ms ease,
+    box-shadow 170ms ease,
+    transform 170ms ease;
+}
+
+
+.clean-login-input input::placeholder {
+  color:
+    #aaaebb;
+}
+
+
+.clean-login-input input:focus {
+  border-color:
+    #aaa1f1;
+
+  box-shadow:
+    0 0 0 4px
+    rgba(116, 103, 238, 0.09);
+
+  transform:
+    translateY(-1px);
+}
+
+
+.clean-login-input input:disabled {
+  background:
+    #f6f6f9;
+
+  cursor:
+    not-allowed;
+}
+
+
+/* Error */
+
+.clean-login-error {
+  display:
+    flex;
+
+  align-items:
+    center;
+
+  gap:
+    10px;
+
+  padding:
+    10px 12px;
+
+  border:
+    1px solid
+    #f0d2d8;
+
+  border-radius:
+    10px;
+
+  background:
+    #fff5f6;
+
+  color:
+    #b65a6a;
+}
+
+
+.clean-login-error > span {
+  display:
+    grid;
+
+  place-items:
+    center;
+
+  width:
+    20px;
+
+  height:
+    20px;
+
+  flex:
+    0 0 20px;
+
+  border-radius:
+    50%;
+
+  background:
+    #fce3e7;
+
+  font-size:
+    10px;
+
+  font-weight:
+    900;
+}
+
+
+.clean-login-error p {
+  margin:
+    0;
+
+  font-size:
+    11px;
+
+  font-weight:
+    700;
+
+  line-height:
+    1.45;
+}
+
+
+/* Login Button */
+
+.clean-login-submit {
+  min-height:
+    49px;
+
+  margin-top:
+    2px;
+
+  border:
+    1px solid
+    #7165df;
+
+  border-radius:
+    12px;
+
+  background:
+    linear-gradient(
+      100deg,
+      #8175f2,
+      #6f62e2
+    );
+
+  color:
+    #ffffff;
+
+  font-size:
+    13px;
+
+  font-weight:
+    900;
+
+  cursor:
+    pointer;
+
+  box-shadow:
+    0 10px 22px
+    rgba(116, 103, 238, 0.17);
+
+  transition:
+    transform 170ms ease,
+    box-shadow 170ms ease,
+    filter 170ms ease;
+}
+
+
+.clean-login-submit:hover:not(:disabled) {
+  transform:
+    translateY(-2px);
+
+  filter:
+    brightness(1.03);
+
+  box-shadow:
+    0 14px 29px
+    rgba(116, 103, 238, 0.23);
+}
+
+
+.clean-login-submit:disabled {
+  opacity:
+    0.62;
+
+  cursor:
+    not-allowed;
+}
+
+
+.clean-login-loading {
+  display:
+    inline-flex;
+
+  align-items:
+    center;
+
+  gap:
+    8px;
+}
+
+
+.clean-login-spinner {
+  width:
+    13px;
+
+  height:
+    13px;
+
+  border:
+    2px solid
+    rgba(255, 255, 255, 0.35);
+
+  border-top-color:
+    #ffffff;
+
+  border-radius:
+    50%;
+
+  animation:
+    cleanLoginSpin
+    0.7s linear
+    infinite;
+}
+
+
+/* Bottom */
+
+.clean-login-divider {
+  display:
+    flex;
+
+  align-items:
+    center;
+
+  gap:
+    11px;
+
+  margin:
+    27px 0 17px;
+}
+
+
+.clean-login-divider span {
+  flex:
+    1;
+
+  height:
+    1px;
+
+  background:
+    #e9e9ef;
+}
+
+
+.clean-login-divider p {
+  margin:
+    0;
+
+  color:
+    #a0a4b0;
+
+  font-size:
+    9px;
+
+  font-weight:
+    800;
+}
+
+
+.clean-login-signup {
+  display:
+    flex;
+
+  align-items:
+    center;
+
+  justify-content:
+    center;
+
+  gap:
+    6px;
+
+  color:
+    #8b909d;
+
+  font-size:
+    11px;
+}
+
+
+.clean-login-signup a {
+  color:
+    #675bd4;
+
+  font-weight:
+    900;
+
+  text-decoration:
+    none;
+}
+
+
+.clean-login-signup a:hover {
+  text-decoration:
+    underline;
+}
+
+
+.clean-login-security {
+  display:
+    flex;
+
+  align-items:
+    center;
+
+  justify-content:
+    center;
+
+  gap:
+    7px;
+
+  margin-top:
+    29px;
+
+  padding-top:
+    19px;
+
+  border-top:
+    1px solid
+    #eeeeF2;
+
+  color:
+    #9a9fab;
+
+  font-size:
+    9px;
+
+  font-weight:
+    700;
+}
+
+
+.clean-login-security-dot {
+  width:
+    6px;
+
+  height:
+    6px;
+
+  border-radius:
+    50%;
+
+  background:
+    #50b98a;
+
+  box-shadow:
+    0 0 0 4px
+    rgba(80, 185, 138, 0.08);
+}
+
+
+/* ============================================================
+   7. Rate Limit Modal
+   ============================================================ */
+
+.clean-login-security-backdrop {
+  position:
+    fixed;
+
+  inset:
+    0;
+
+  z-index:
+    9999;
+
+  display:
+    flex;
+
+  align-items:
+    center;
+
+  justify-content:
+    center;
+
+  padding:
+    20px;
+
+  background:
+    rgba(236, 236, 244, 0.76);
+
+  backdrop-filter:
+    blur(13px);
+}
+
+
+.clean-login-security-modal {
+  width:
+    min(
+      400px,
+      100%
+    );
+
+  padding:
+    31px;
+
+  box-sizing:
+    border-box;
+
+  border:
+    1px solid
+    #e2e2eb;
+
+  border-radius:
+    22px;
+
+  background:
+    rgba(255, 255, 255, 0.97);
+
+  color:
+    #303440;
+
+  text-align:
+    center;
+
+  box-shadow:
+    0 26px 68px
+    rgba(67, 71, 101, 0.15);
+
+  animation:
+    cleanSecurityOpen
+    220ms ease-out;
+}
+
+
+.clean-security-symbol {
+  display:
+    grid;
+
+  place-items:
+    center;
+
+  width:
+    50px;
+
+  height:
+    50px;
+
+  margin:
+    0 auto 15px;
+
+  border:
+    1px solid
+    #ecd7b6;
+
+  border-radius:
+    15px;
+
+  background:
+    #fff8eb;
+
+  color:
+    #ae7b34;
+
+  font-size:
+    21px;
+
+  font-weight:
+    900;
+}
+
+
+.clean-security-label {
+  display:
+    block;
+
+  color:
+    #9287e6;
+
+  font-size:
+    9px;
+
+  font-weight:
+    900;
+
+  letter-spacing:
+    1px;
+}
+
+
+.clean-login-security-modal h2 {
+  margin:
+    8px 0 12px;
+
+  color:
+    #303440;
+
+  font-size:
+    21px;
+
+  font-weight:
+    900;
+}
+
+
+.clean-login-security-modal p {
+  margin:
+    0;
+
+  color:
+    #808695;
+
+  font-size:
+    12px;
+
+  line-height:
+    1.7;
+}
+
+
+.clean-security-timer {
+  margin:
+    22px 0;
+
+  padding:
+    17px;
+
+  border:
+    1px solid
+    #dedbf7;
+
+  border-radius:
+    14px;
+
+  background:
+    #f5f3ff;
+}
+
+
+.clean-security-timer span {
+  display:
+    block;
+
+  color:
+    #9390a6;
+
+  font-size:
+    9px;
+
+  font-weight:
+    800;
+}
+
+
+.clean-security-timer strong {
+  display:
+    block;
+
+  margin-top:
+    5px;
+
+  color:
+    #675bd5;
+
+  font-size:
+    37px;
+
+  font-weight:
+    900;
+
+  letter-spacing:
+    3px;
+}
+
+
+.clean-security-timer.ready {
+  border-color:
+    #d6ebdf;
+
+  background:
+    #f3fbf7;
+}
+
+
+.clean-security-timer.ready strong {
+  color:
+    #479c74;
+}
+
+
+.clean-security-help {
+  color:
+    #9ca0ac !important;
+}
+
+
+.clean-login-security-modal button {
+  width:
+    100%;
+
+  margin-top:
+    22px;
+
+  padding:
+    11px 16px;
+
+  border:
+    1px solid
+    #7265df;
+
+  border-radius:
+    11px;
+
+  background:
+    linear-gradient(
+      100deg,
+      #8074ef,
+      #6e61df
+    );
+
+  color:
+    #ffffff;
+
+  font-size:
+    11px;
+
+  font-weight:
+    900;
+
+  cursor:
+    pointer;
+}
+
+
+.clean-login-security-modal button:disabled {
+  border-color:
+    #e1e1e8;
+
+  background:
+    #f0f0f4;
+
+  color:
+    #a2a5b0;
+
+  cursor:
+    not-allowed;
+}
+
+
+/* ============================================================
+   8. Animations
+   ============================================================ */
+
+@keyframes cleanLoginOrbOne {
+
+  0%,
+  100% {
+    transform:
+      translate(
+        0,
+        0
+      );
+  }
+
+  50% {
+    transform:
+      translate(
+        34px,
+        25px
+      );
+  }
+}
+
+
+@keyframes cleanLoginOrbTwo {
+
+  0%,
+  100% {
+    transform:
+      translate(
+        0,
+        0
+      );
+  }
+
+  50% {
+    transform:
+      translate(
+        -38px,
+        -20px
+      );
+  }
+}
+
+
+@keyframes cleanLoginOrbThree {
+
+  0%,
+  100% {
+    transform:
+      translateY(
+        0
+      );
+  }
+
+  50% {
+    transform:
+      translateY(
+        -22px
+      );
+  }
+}
+
+
+@keyframes cleanBrowserFloat {
+
+  0%,
+  100% {
+    transform:
+      translateY(0)
+      rotate(-0.3deg);
+  }
+
+  50% {
+    transform:
+      translateY(-7px)
+      rotate(0.3deg);
+  }
+}
+
+
+@keyframes cleanMobileFloat {
+
+  0%,
+  100% {
+    transform:
+      translateY(0)
+      rotate(-2deg);
+  }
+
+  50% {
+    transform:
+      translateY(-9px)
+      rotate(0deg);
+  }
+}
+
+
+@keyframes cleanPaletteFloat {
+
+  0%,
+  100% {
+    transform:
+      translateY(0)
+      rotate(1deg);
+  }
+
+  50% {
+    transform:
+      translateY(-7px)
+      rotate(-1deg);
+  }
+}
+
+
+@keyframes cleanFloatOne {
+
+  0%,
+  100% {
+    transform:
+      translate(
+        0,
+        0
+      )
+      rotate(2deg);
+  }
+
+  50% {
+    transform:
+      translate(
+        -8px,
+        8px
+      )
+      rotate(-3deg);
+  }
+}
+
+
+@keyframes cleanFloatTwo {
+
+  0%,
+  100% {
+    transform:
+      translateY(0);
+  }
+
+  50% {
+    transform:
+      translateY(-10px);
+  }
+}
+
+
+@keyframes cleanChartPulse {
+
+  0%,
+  100% {
+    opacity:
+      0.55;
+  }
+
+  50% {
+    opacity:
+      1;
+  }
+}
+
+
+@keyframes cleanLoginSpin {
+
+  to {
+    transform:
+      rotate(360deg);
+  }
+}
+
+
+@keyframes cleanSecurityOpen {
+
+  from {
+    opacity:
+      0;
+
+    transform:
+      translateY(
+        10px
+      )
+      scale(
+        0.98
+      );
+  }
+
+  to {
+    opacity:
+      1;
+
+    transform:
+      translateY(
+        0
+      )
+      scale(
+        1
+      );
+  }
+}
+
+
+/* ============================================================
+   9. Responsive
+   ============================================================ */
+
+@media (
+  max-width: 930px
+) {
+
+  .clean-login-page {
+    align-items:
+      flex-start;
+
+    padding:
+      22px;
+  }
+
+
+  .clean-login-shell {
+    grid-template-columns:
+      1fr;
+
+    max-width:
+      600px;
+  }
+
+
+  .clean-login-visual {
+    min-height:
+      560px;
+
+    border-right:
+      0;
+
+    border-bottom:
+      1px solid
+      #e5e5ed;
+  }
+
+
+  .clean-login-panel {
+    padding:
+      42px 34px 48px;
+  }
+}
+
+
+@media (
+  max-width: 560px
+) {
+
+  .clean-login-page {
+    padding:
+      12px;
+  }
+
+
+  .clean-login-shell {
+    border-radius:
+      22px;
+  }
+
+
+  .clean-login-visual {
+    min-height:
+      470px;
+
+    padding:
+      28px 23px;
+  }
+
+
+  .clean-login-copy {
+    margin-top:
+      30px;
+  }
+
+
+  .clean-login-copy h1 {
+    font-size:
+      39px;
+  }
+
+
+  .clean-ui-browser {
+    width:
+      78%;
+
+    height:
+      210px;
+
+    left:
+      16%;
+  }
+
+
+  .clean-ui-mobile {
+    width:
+      94px;
+
+    height:
+      180px;
+  }
+
+
+  .clean-ui-palette {
+    right:
+      1%;
+
+    transform:
+      scale(0.88);
+  }
+
+
+  .clean-login-panel {
+    padding:
+      35px 22px 40px;
+  }
+
+
+  .clean-login-card-heading h2 {
+    font-size:
+      29px;
+  }
+}
+
+
+/* ============================================================
+   10. Reduced Motion
+   ============================================================ */
+
+@media (
+  prefers-reduced-motion: reduce
+) {
+
+  .clean-login-orb,
+  .clean-ui-browser,
+  .clean-ui-mobile,
+  .clean-ui-palette,
+  .clean-ui-float-card,
+  .clean-ui-chart-line,
+  .clean-login-spinner,
+  .clean-login-security-modal {
+    animation:
+      none !important;
+  }
+ 
+}
+/* ============================================================
+   Abstract Data / Coding UI Visual
+   외부 이미지 없이 CSS + SVG로 구성
+   ============================================================ */
+
+.clean-ui-stage {
+  position: relative;
+
+  flex: 1;
+
+  min-height: 330px;
+
+  margin-top: 24px;
+
+  isolation: isolate;
+}
+
+
+/* ============================================================
+   Background Glow
+   ============================================================ */
+
+.clean-abstract-glow {
+  position: absolute;
+
+  z-index: -1;
+
+  border-radius: 50%;
+
+  filter: blur(30px);
+
+  pointer-events: none;
+}
+
+
+.clean-abstract-glow-one {
+  width: 300px;
+
+  height: 300px;
+
+  left: 15%;
+
+  top: 10px;
+
+  background:
+    rgba(153, 142, 244, 0.16);
+
+  animation:
+    abstractGlowOne
+    9s ease-in-out
+    infinite;
+}
+
+
+.clean-abstract-glow-two {
+  width: 230px;
+
+  height: 230px;
+
+  right: 3%;
+
+  bottom: 0;
+
+  background:
+    rgba(139, 197, 239, 0.17);
+
+  animation:
+    abstractGlowTwo
+    11s ease-in-out
+    infinite;
+}
+
+
+/* ============================================================
+   Main Window
+   ============================================================ */
+
+.clean-abstract-window {
+  position: absolute;
+
+  width: 76%;
+
+  height: 275px;
+
+  left: 12%;
+
+  top: 26px;
+
+  overflow: hidden;
+
+  border:
+    1px solid
+    rgba(220, 220, 236, 0.96);
+
+  border-radius: 21px;
+
+  background:
+    rgba(255, 255, 255, 0.94);
+
+  box-shadow:
+    0 22px 48px
+    rgba(70, 75, 110, 0.12);
+
+  backdrop-filter: blur(16px);
+
+  animation:
+    abstractWindowFloat
+    7s ease-in-out
+    infinite;
+}
+
+
+/* Browser Top */
+
+.clean-abstract-window-header {
+  display: flex;
+
+  align-items: center;
+
+  gap: 11px;
+
+  height: 34px;
+
+  padding: 0 13px;
+
+  border-bottom:
+    1px solid
+    #eeeeF4;
+
+  background:
+    rgba(251, 251, 254, 0.95);
+}
+
+
+.clean-window-dots {
+  display: flex;
+
+  gap: 5px;
+}
+
+
+.clean-window-dots span {
+  width: 6px;
+
+  height: 6px;
+
+  border-radius: 50%;
+}
+
+
+.clean-window-dots span:nth-child(1) {
+  background: #eda7b3;
+}
+
+
+.clean-window-dots span:nth-child(2) {
+  background: #edd49d;
+}
+
+
+.clean-window-dots span:nth-child(3) {
+  background: #9fd7bd;
+}
+
+
+.clean-window-address {
+  width: 46%;
+
+  height: 7px;
+
+  border-radius: 999px;
+
+  background:
+    #efeff5;
+}
+
+
+/* ============================================================
+   Window Body
+   ============================================================ */
+
+.clean-abstract-window-body {
+  display: grid;
+
+  grid-template-columns:
+    55px 1fr;
+
+  height:
+    calc(100% - 34px);
+}
+
+
+/* ============================================================
+   Mini Sidebar
+   ============================================================ */
+
+.clean-abstract-sidebar {
+  display: flex;
+
+  flex-direction: column;
+
+  align-items: center;
+
+  gap: 12px;
+
+  padding-top: 17px;
+
+  border-right:
+    1px solid
+    #eeeeF4;
+
+  background:
+    #fbfbfe;
+}
+
+
+.clean-nav-logo {
+  width: 19px;
+
+  height: 19px;
+
+  margin-bottom: 4px;
+
+  border-radius: 7px;
+
+  background:
+    linear-gradient(
+      145deg,
+      #cdc7ff,
+      #ddd9ff
+    );
+}
+
+
+.clean-nav-item {
+  display: flex;
+
+  align-items: center;
+
+  gap: 5px;
+
+  width: 37px;
+
+  height: 25px;
+
+  padding: 0 5px;
+
+  box-sizing: border-box;
+
+  border-radius: 7px;
+}
+
+
+.clean-nav-item span {
+  width: 7px;
+
+  height: 7px;
+
+  flex: 0 0 7px;
+
+  border-radius: 50%;
+
+  background:
+    #dcddeb;
+}
+
+
+.clean-nav-item i {
+  width: 18px;
+
+  height: 5px;
+
+  border-radius: 999px;
+
+  background:
+    #e6e6ef;
+}
+
+
+.clean-nav-item.active {
+  background:
+    #eeebff;
+}
+
+
+.clean-nav-item.active span {
+  background:
+    #9084ed;
+}
+
+
+.clean-nav-item.active i {
+  background:
+    #b9b2f5;
+}
+
+
+/* ============================================================
+   Main Dashboard
+   ============================================================ */
+
+.clean-abstract-dashboard {
+  padding: 17px;
+
+  box-sizing: border-box;
+}
+
+
+/* Summary */
+
+.clean-abstract-summary-row {
+  display: grid;
+
+  grid-template-columns:
+    repeat(
+      3,
+      1fr
+    );
+
+  gap: 9px;
+}
+
+
+.clean-summary-card {
+  display: flex;
+
+  align-items: center;
+
+  gap: 8px;
+
+  min-width: 0;
+
+  height: 48px;
+
+  padding: 0 10px;
+
+  border:
+    1px solid
+    #e9e8f1;
+
+  border-radius: 11px;
+
+  background:
+    #ffffff;
+
+  box-shadow:
+    0 5px 13px
+    rgba(73, 77, 107, 0.045);
+}
+
+
+.clean-summary-icon {
+  width: 22px;
+
+  height: 22px;
+
+  flex: 0 0 22px;
+
+  border-radius: 7px;
+}
+
+
+.clean-summary-icon.lavender {
+  background:
+    linear-gradient(
+      145deg,
+      #c6bfff,
+      #9f95f2
+    );
+}
+
+
+.clean-summary-icon.blue {
+  background:
+    linear-gradient(
+      145deg,
+      #c1ddf5,
+      #93bee7
+    );
+}
+
+
+.clean-summary-icon.pink {
+  background:
+    linear-gradient(
+      145deg,
+      #efc6df,
+      #dc9fcb
+    );
+}
+
+
+.clean-summary-card div {
+  flex: 1;
+}
+
+
+.clean-summary-card i {
+  display: block;
+
+  width: 55%;
+
+  height: 5px;
+
+  border-radius: 999px;
+
+  background:
+    #e7e7ef;
+}
+
+
+.clean-summary-card strong {
+  display: block;
+
+  width: 77%;
+
+  height: 7px;
+
+  margin-top: 6px;
+
+  border-radius: 999px;
+
+  background:
+    #d7d8e4;
+}
+
+
+/* ============================================================
+   Content
+   ============================================================ */
+
+.clean-abstract-content-row {
+  display: grid;
+
+  grid-template-columns:
+    1.5fr 0.7fr;
+
+  gap: 10px;
+
+  margin-top: 11px;
+}
+
+
+/* ============================================================
+   Code Panel
+   ============================================================ */
+
+.clean-code-panel {
+  height: 158px;
+
+  padding: 13px;
+
+  box-sizing: border-box;
+
+  border:
+    1px solid
+    #e9e9f1;
+
+  border-radius: 12px;
+
+  background:
+    linear-gradient(
+      145deg,
+      #fafafd,
+      #ffffff
+    );
+}
+
+
+.clean-panel-title {
+  width: 31%;
+
+  height: 6px;
+
+  margin-bottom: 13px;
+
+  border-radius: 999px;
+
+  background:
+    #dadbe5;
+}
+
+
+.clean-code-line {
+  display: flex;
+
+  align-items: center;
+
+  gap: 6px;
+
+  height: 17px;
+
+  padding-left: 4px;
+}
+
+
+.clean-code-line span {
+  width: 6px;
+
+  height: 6px;
+
+  flex: 0 0 6px;
+
+  border-radius: 50%;
+}
+
+
+.clean-code-line i {
+  display: block;
+
+  height: 6px;
+
+  border-radius: 999px;
+}
+
+
+.clean-code-line.line-1 span,
+.clean-code-line.line-4 span {
+  background:
+    #9f94ed;
+}
+
+
+.clean-code-line.line-2 span,
+.clean-code-line.line-5 span {
+  background:
+    #93bce7;
+}
+
+
+.clean-code-line.line-3 span,
+.clean-code-line.line-6 span {
+  background:
+    #dda1cd;
+}
+
+
+.clean-code-line.line-1 i {
+  width: 65%;
+
+  background:
+    linear-gradient(
+      90deg,
+      #a89df1,
+      #c5c0f4
+    );
+}
+
+
+.clean-code-line.line-2 i {
+  width: 43%;
+
+  margin-left: 12px;
+
+  background:
+    #bad6ef;
+}
+
+
+.clean-code-line.line-3 i {
+  width: 74%;
+
+  margin-left: 20px;
+
+  background:
+    linear-gradient(
+      90deg,
+      #e2afd2,
+      #bfd3ef
+    );
+}
+
+
+.clean-code-line.line-4 i {
+  width: 53%;
+
+  margin-left: 8px;
+
+  background:
+    #a9a0eb;
+}
+
+
+.clean-code-line.line-5 i {
+  width: 69%;
+
+  margin-left: 23px;
+
+  background:
+    #bdd9ef;
+}
+
+
+.clean-code-line.line-6 i {
+  width: 37%;
+
+  margin-left: 13px;
+
+  background:
+    #e5b2d5;
+}
+
+
+/* ============================================================
+   Chart Column
+   ============================================================ */
+
+.clean-chart-column {
+  display: grid;
+
+  grid-template-rows:
+    1.1fr 0.9fr;
+
+  gap: 9px;
+}
+
+
+.clean-line-chart,
+.clean-donut-card {
+  position: relative;
+
+  overflow: hidden;
+
+  border:
+    1px solid
+    #e9e9f1;
+
+  border-radius: 11px;
+
+  background:
+    #ffffff;
+}
+
+
+/* Line Chart */
+
+.clean-line-chart svg {
+  position: absolute;
+
+  inset: 12px;
+
+  width:
+    calc(100% - 24px);
+
+  height:
+    calc(100% - 24px);
+}
+
+
+.clean-chart-grid {
+  position: absolute;
+
+  inset: 12px;
+
+  opacity: 0.45;
+
+  background-image:
+    linear-gradient(
+      #ececf3 1px,
+      transparent 1px
+    );
+
+  background-size:
+    100% 25%;
+}
+
+
+.clean-chart-area {
+  fill:
+    url('#none');
+
+  fill:
+    rgba(148, 136, 238, 0.09);
+}
+
+
+.clean-chart-path {
+  fill: none;
+
+  stroke:
+    #9489ec;
+
+  stroke-width:
+    3;
+
+  stroke-linecap:
+    round;
+
+  filter:
+    drop-shadow(
+      0 3px 3px
+      rgba(125, 111, 224, 0.12)
+    );
+
+  animation:
+    abstractChartPulse
+    4.8s ease-in-out
+    infinite;
+}
+
+
+/* Donut */
+
+.clean-donut-card {
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  gap: 11px;
+}
+
+
+.clean-donut-chart {
+  width: 46px;
+
+  height: 46px;
+
+  border-radius: 50%;
+
+  background:
+    conic-gradient(
+      #968aec 0deg 110deg,
+      #9fc5ec 110deg 220deg,
+      #dea6d0 220deg 285deg,
+      #d9d7ef 285deg 360deg
+    );
+
+  position: relative;
+
+  animation:
+    abstractDonutFloat
+    6s ease-in-out
+    infinite;
+}
+
+
+.clean-donut-chart::after {
+  content: '';
+
+  position: absolute;
+
+  inset: 12px;
+
+  border-radius: 50%;
+
+  background:
+    #ffffff;
+}
+
+
+.clean-donut-list {
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 6px;
+}
+
+
+.clean-donut-list span {
+  display: block;
+
+  width: 38px;
+
+  height: 5px;
+
+  border-radius: 999px;
+
+  background:
+    #e1e2eb;
+}
+
+
+/* ============================================================
+   Floating Cards
+   ============================================================ */
+
+.clean-floating-card {
+  position: absolute;
+
+  z-index: 8;
+
+  box-sizing: border-box;
+
+  border:
+    1px solid
+    rgba(224, 224, 235, 0.95);
+
+  border-radius: 15px;
+
+  background:
+    rgba(255, 255, 255, 0.94);
+
+  box-shadow:
+    0 15px 35px
+    rgba(77, 81, 112, 0.10);
+
+  backdrop-filter:
+    blur(15px);
+}
+
+
+/* Bar Chart */
+
+.clean-floating-bars {
+  width: 124px;
+
+  height: 108px;
+
+  left: 0;
+
+  top: 87px;
+
+  padding: 15px;
+
+  animation:
+    abstractFloatingLeft
+    6.5s ease-in-out
+    infinite;
+}
+
+
+.clean-floating-title {
+  width: 46%;
+
+  height: 6px;
+
+  margin-bottom: 15px;
+
+  border-radius: 999px;
+
+  background:
+    #dddde7;
+}
+
+
+.clean-floating-title.short {
+  width: 34%;
+}
+
+
+.clean-bar-chart {
+  display: flex;
+
+  align-items: flex-end;
+
+  gap: 7px;
+
+  height: 57px;
+}
+
+
+.clean-bar-chart span {
+  flex: 1;
+
+  border-radius:
+    6px 6px 3px 3px;
+
+  background:
+    linear-gradient(
+      180deg,
+      #aa9ff2,
+      #8f84e7
+    );
+}
+
+
+.clean-bar-chart span:nth-child(1) {
+  height: 35%;
+}
+
+
+.clean-bar-chart span:nth-child(2) {
+  height: 59%;
+}
+
+
+.clean-bar-chart span:nth-child(3) {
+  height: 82%;
+}
+
+
+.clean-bar-chart span:nth-child(4) {
+  height: 48%;
+}
+
+
+.clean-bar-chart span:nth-child(5) {
+  height: 72%;
+
+  background:
+    linear-gradient(
+      180deg,
+      #e0add1,
+      #cc91c0
+    );
+}
+
+
+/* Floating Graph */
+
+.clean-floating-graph {
+  width: 145px;
+
+  height: 103px;
+
+  right: 0;
+
+  top: 36px;
+
+  padding: 14px;
+
+  animation:
+    abstractFloatingRight
+    7.4s ease-in-out
+    infinite;
+}
+
+
+.clean-floating-graph svg {
+  width: 100%;
+
+  height: 61px;
+}
+
+
+.clean-floating-area {
+  fill:
+    rgba(164, 140, 239, 0.09);
+}
+
+
+.clean-floating-path {
+  fill: none;
+
+  stroke:
+    #9a83eb;
+
+  stroke-width:
+    3;
+
+  stroke-linecap:
+    round;
+}
+
+
+/* Floating List */
+
+.clean-floating-list {
+  width: 130px;
+
+  right: 5%;
+
+  bottom: 0;
+
+  padding:
+    13px 14px;
+
+  animation:
+    abstractFloatingBottom
+    8s ease-in-out
+    infinite;
+}
+
+
+.clean-list-row {
+  display: flex;
+
+  align-items: center;
+
+  gap: 8px;
+
+  height: 25px;
+}
+
+
+.clean-list-color {
+  width: 14px;
+
+  height: 14px;
+
+  flex: 0 0 14px;
+
+  border-radius: 5px;
+}
+
+
+.clean-list-color.color-blue {
+  background:
+    #a7ccef;
+}
+
+
+.clean-list-color.color-purple {
+  background:
+    #9e91ed;
+}
+
+
+.clean-list-color.color-pink {
+  background:
+    #dda3ce;
+}
+
+
+.clean-list-row i {
+  width: 57px;
+
+  height: 5px;
+
+  border-radius: 999px;
+
+  background:
+    #e0e1ea;
+}
+
+
+/* ============================================================
+   Decorative Orbits
+   ============================================================ */
+
+.clean-orbit-line {
+  position: absolute;
+
+  z-index: -1;
+
+  border:
+    1px solid
+    rgba(151, 137, 238, 0.28);
+
+  pointer-events: none;
+}
+
+
+.clean-orbit-line span {
+  position: absolute;
+
+  width: 8px;
+
+  height: 8px;
+
+  border-radius: 50%;
+
+  background:
+    #9e91ed;
+
+  box-shadow:
+    0 0 12px
+    rgba(158, 145, 237, 0.30);
+}
+
+
+.clean-orbit-line.orbit-one {
+  width: 210px;
+
+  height: 105px;
+
+  left: 2%;
+
+  top: 45px;
+
+  border-right: 0;
+
+  border-bottom: 0;
+
+  border-radius:
+    110px 0 0 0;
+}
+
+
+.clean-orbit-line.orbit-one span {
+  left: -4px;
+
+  bottom: -4px;
+}
+
+
+.clean-orbit-line.orbit-two {
+  width: 190px;
+
+  height: 120px;
+
+  right: 2%;
+
+  top: 26px;
+
+  border-left: 0;
+
+  border-bottom: 0;
+
+  border-radius:
+    0 110px 0 0;
+}
+
+
+.clean-orbit-line.orbit-two span {
+  right: -4px;
+
+  bottom: -4px;
+}
+
+
+/* ============================================================
+   Decorative Spheres
+   ============================================================ */
+
+.clean-visual-sphere {
+  position: absolute;
+
+  z-index: 9;
+
+  border-radius: 50%;
+
+  background:
+    radial-gradient(
+      circle at 30% 25%,
+      #f4d5f2,
+      #a89ff4 48%,
+      #a9cdef
+    );
+
+  box-shadow:
+    0 9px 20px
+    rgba(115, 106, 197, 0.10);
+}
+
+
+.clean-visual-sphere.sphere-one {
+  width: 30px;
+
+  height: 30px;
+
+  left: 7%;
+
+  top: 8px;
+
+  animation:
+    abstractSphereOne
+    6s ease-in-out
+    infinite;
+}
+
+
+.clean-visual-sphere.sphere-two {
+  width: 17px;
+
+  height: 17px;
+
+  left: 24%;
+
+  bottom: 3px;
+
+  animation:
+    abstractSphereTwo
+    7.5s ease-in-out
+    infinite;
+}
+
+
+.clean-visual-sphere.sphere-three {
+  width: 26px;
+
+  height: 26px;
+
+  right: 4%;
+
+  top: 169px;
+
+  animation:
+    abstractSphereThree
+    6.8s ease-in-out
+    infinite;
+}
+
+
+/* ============================================================
+   Animation
+   ============================================================ */
+
+@keyframes abstractWindowFloat {
+
+  0%,
+  100% {
+    transform:
+      translateY(0);
+  }
+
+  50% {
+    transform:
+      translateY(-6px);
+  }
+}
+
+
+@keyframes abstractFloatingLeft {
+
+  0%,
+  100% {
+    transform:
+      translate(
+        0,
+        0
+      )
+      rotate(-1deg);
+  }
+
+  50% {
+    transform:
+      translate(
+        5px,
+        -8px
+      )
+      rotate(1deg);
+  }
+}
+
+
+@keyframes abstractFloatingRight {
+
+  0%,
+  100% {
+    transform:
+      translateY(0)
+      rotate(1deg);
+  }
+
+  50% {
+    transform:
+      translateY(-9px)
+      rotate(-1deg);
+  }
+}
+
+
+@keyframes abstractFloatingBottom {
+
+  0%,
+  100% {
+    transform:
+      translate(
+        0,
+        0
+      );
+  }
+
+  50% {
+    transform:
+      translate(
+        -5px,
+        -7px
+      );
+  }
+}
+
+
+@keyframes abstractSphereOne {
+
+  0%,
+  100% {
+    transform:
+      translate(
+        0,
+        0
+      );
+  }
+
+  50% {
+    transform:
+      translate(
+        8px,
+        -8px
+      );
+  }
+}
+
+
+@keyframes abstractSphereTwo {
+
+  0%,
+  100% {
+    transform:
+      translateY(0);
+  }
+
+  50% {
+    transform:
+      translateY(-10px);
+  }
+}
+
+
+@keyframes abstractSphereThree {
+
+  0%,
+  100% {
+    transform:
+      translateY(0);
+  }
+
+  50% {
+    transform:
+      translateY(9px);
+  }
+}
+
+
+@keyframes abstractGlowOne {
+
+  0%,
+  100% {
+    transform:
+      translate(
+        0,
+        0
+      );
+  }
+
+  50% {
+    transform:
+      translate(
+        20px,
+        -12px
+      );
+  }
+}
+
+
+@keyframes abstractGlowTwo {
+
+  0%,
+  100% {
+    transform:
+      translate(
+        0,
+        0
+      );
+  }
+
+  50% {
+    transform:
+      translate(
+        -16px,
+        9px
+      );
+  }
+}
+
+
+@keyframes abstractChartPulse {
+
+  0%,
+  100% {
+    opacity: 0.68;
+  }
+
+  50% {
+    opacity: 1;
+  }
+}
+
+
+@keyframes abstractDonutFloat {
+
+  0%,
+  100% {
+    transform:
+      rotate(0deg);
+  }
+
+  50% {
+    transform:
+      rotate(7deg);
+  }
+}
+
+
+/* ============================================================
+   Responsive
+   ============================================================ */
+
+@media (
+  max-width: 930px
+) {
+
+  .clean-ui-stage {
+    min-height:
+      325px;
+  }
+}
+
+
+@media (
+  max-width: 560px
+) {
+
+  .clean-ui-stage {
+    min-height:
+      245px;
+
+    transform:
+      scale(0.88);
+
+    transform-origin:
+      center top;
+  }
+
+
+  .clean-abstract-window {
+    width:
+      79%;
+
+    height:
+      230px;
+
+    left:
+      11%;
+  }
+
+
+  .clean-floating-bars {
+    transform:
+      scale(0.82);
+  }
+
+
+  .clean-floating-graph {
+    transform:
+      scale(0.82);
+  }
+
+
+  .clean-floating-list {
+    display:
+      none;
+  }
+}
+
+
+/* 움직임 감소 설정 */
+@media (
+  prefers-reduced-motion: reduce
+) {
+
+  .clean-abstract-window,
+  .clean-floating-card,
+  .clean-visual-sphere,
+  .clean-abstract-glow,
+  .clean-chart-path,
+  .clean-donut-chart {
+    animation:
+      none !important;
+  }
+}

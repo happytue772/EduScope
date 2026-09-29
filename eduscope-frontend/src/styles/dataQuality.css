@@ -1,0 +1,416 @@
+.dq-page {
+  padding: 28px 32px 45px;
+}
+
+
+.dq-header {
+  margin-bottom: 20px;
+}
+
+
+.dq-header p {
+  margin: 0;
+  color: #71879a;
+  font-size: 12px;
+}
+
+
+.dq-header h1 {
+  margin: 5px 0;
+  color: #153e67;
+  font-size: 28px;
+}
+
+
+.dq-header span {
+  color: #617b93;
+  font-size: 12px;
+}
+
+
+.dq-filter {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  margin-bottom: 18px;
+  padding: 16px 20px;
+
+  background: #ffffff;
+
+  border-radius: 15px;
+}
+
+
+.dq-filter label {
+  color: #315a7d;
+
+  font-size: 12px;
+  font-weight: 700;
+}
+
+
+.dq-filter select {
+  min-width: 300px;
+
+  padding: 9px 11px;
+
+  border: 1px solid #cadde9;
+  border-radius: 8px;
+
+  background: #ffffff;
+
+  color: #315a7d;
+}
+
+
+.dq-filter span {
+  color: #71879a;
+
+  font-size: 11px;
+}
+
+
+.dq-dataset-card {
+  display: grid;
+
+  grid-template-columns:
+    repeat(
+      4,
+      minmax(0, 1fr)
+    );
+
+  gap: 14px;
+
+  margin-bottom: 18px;
+  padding: 20px;
+
+  background: #ffffff;
+
+  border-radius: 17px;
+}
+
+
+.dq-dataset-card > div,
+.dq-kpi {
+  padding: 16px;
+
+  background: #f7fbff;
+
+  border-radius: 12px;
+}
+
+
+.dq-dataset-card span,
+.dq-kpi span {
+  display: block;
+
+  color: #71879a;
+
+  font-size: 11px;
+}
+
+
+.dq-dataset-card strong {
+  display: block;
+
+  margin-top: 6px;
+
+  color: #174a75;
+
+  font-size: 14px;
+}
+
+
+.dq-kpi-grid {
+  display: grid;
+
+  grid-template-columns:
+    repeat(
+      4,
+      minmax(0, 1fr)
+    );
+
+  gap: 14px;
+
+  margin-bottom: 18px;
+}
+
+
+.dq-kpi {
+  background: #ffffff;
+}
+
+
+.dq-kpi strong {
+  display: inline-block;
+
+  margin-top: 8px;
+
+  color: #17456e;
+
+  font-size: 23px;
+}
+
+
+.dq-kpi small {
+  margin-left: 5px;
+
+  color: #788da0;
+
+  font-size: 11px;
+}
+
+
+.dq-note {
+  margin-bottom: 18px;
+  padding: 13px 16px;
+
+  background: #fff8e8;
+
+  border: 1px solid #f0dfb0;
+  border-radius: 10px;
+
+  color: #80651e;
+
+  font-size: 11px;
+  line-height: 1.6;
+}
+
+
+.dq-panel {
+  margin-bottom: 18px;
+  padding: 24px;
+
+  background: #ffffff;
+
+  border-radius: 17px;
+}
+
+
+.dq-panel h2 {
+  margin: 0 0 5px;
+
+  color: #173f66;
+
+  font-size: 19px;
+}
+
+
+.dq-panel > p {
+  margin: 0 0 20px;
+
+  color: #74899b;
+
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+
+.dq-table-wrapper {
+  overflow-x: auto;
+}
+
+
+.dq-table-wrapper table {
+  width: 100%;
+
+  border-collapse: collapse;
+
+  font-size: 12px;
+}
+
+
+.dq-table-wrapper th,
+.dq-table-wrapper td {
+  padding: 11px 10px;
+
+  border-bottom:
+    1px solid #e1ebf3;
+
+  text-align: left;
+
+  white-space: nowrap;
+}
+
+
+.dq-table-wrapper th {
+  background: #eef6fc;
+
+  color: #315a7d;
+}
+
+
+.dq-table-wrapper tbody tr:hover {
+  background: #f7fbff;
+}
+
+
+.dq-quality-badge {
+  display: inline-block;
+
+  padding: 4px 8px;
+
+  background: #e7f2fb;
+
+  border-radius: 7px;
+
+  color: #286493;
+
+  font-size: 10px;
+  font-weight: 700;
+}
+
+
+.dq-quality-badge.no-detection {
+  background: #f0f3f5;
+
+  color: #6d7d89;
+}
+
+
+.dq-sample {
+  max-width: 280px;
+
+  overflow: hidden;
+
+  text-overflow: ellipsis;
+}
+
+
+.dq-empty {
+  padding: 55px 20px !important;
+
+  text-align: center !important;
+
+  color: #788da0;
+}
+
+
+.dq-job {
+  padding: 18px 20px;
+
+  background: #ffffff;
+
+  border-radius: 15px;
+}
+
+
+.dq-job summary {
+  color: #245274;
+
+  font-size: 13px;
+  font-weight: 700;
+
+  cursor: pointer;
+}
+
+
+.dq-job-grid {
+  display: grid;
+
+  grid-template-columns:
+    repeat(
+      3,
+      minmax(0, 1fr)
+    );
+
+  gap: 12px;
+
+  margin-top: 16px;
+}
+
+
+.dq-job-item {
+  padding: 14px;
+
+  background: #f7fbff;
+
+  border-radius: 10px;
+}
+
+
+.dq-job-item span {
+  display: block;
+
+  margin-bottom: 5px;
+
+  color: #71879a;
+
+  font-size: 10px;
+}
+
+
+.dq-job-item strong {
+  color: #315a7d;
+
+  font-size: 12px;
+
+  word-break: break-all;
+}
+
+
+.dq-job-empty {
+  color: #71879a;
+
+  font-size: 12px;
+}
+
+
+.dq-loading {
+  padding: 60px;
+
+  text-align: center;
+
+  color: #71869a;
+}
+
+
+@media (
+  max-width: 900px
+) {
+
+  .dq-filter {
+    align-items: stretch;
+
+    flex-direction: column;
+  }
+
+
+  .dq-filter select {
+    min-width: 0;
+
+    width: 100%;
+  }
+
+
+  .dq-dataset-card,
+  .dq-kpi-grid {
+    grid-template-columns:
+      repeat(
+        2,
+        minmax(0, 1fr)
+      );
+  }
+
+
+  .dq-job-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+
+@media (
+  max-width: 600px
+) {
+
+  .dq-page {
+    padding: 18px 14px 30px;
+  }
+
+
+  .dq-dataset-card,
+  .dq-kpi-grid {
+    grid-template-columns: 1fr;
+  }
+}

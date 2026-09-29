@@ -1,0 +1,61 @@
+﻿# ============================================================
+# EduScope Git Ignore
+# ============================================================
+
+# Environment / Secrets
+.env
+.env.*
+!.env.example
+
+# Java / Maven
+**/target/
+*.class
+
+# React / Node
+**/node_modules/
+**/dist/
+**/.vite/
+
+# Logs
+*.log
+logs/
+
+# IDE
+.idea/
+.vscode/
+.classpath
+.project
+.settings/
+
+# OS
+Thumbs.db
+.DS_Store
+
+# Oracle Wallet / Certificates / Keys
+**/Wallet_*/
+**/cwallet.sso
+**/ewallet.p12
+**/ewallet.pem
+**/keystore.jks
+**/truststore.jks
+*.pem
+*.key
+*.p12
+
+# Local exports / generated analysis files
+export/
+loader-input/
+
+# Raw dataset
+data/
+
+# Backup / patch / archive files
+*.zip
+*.tar.gz
+*.tgz
+
+# Temporary
+*.tmp
+*.bak
+
+docker-composse.yml.txt

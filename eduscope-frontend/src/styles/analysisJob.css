@@ -1,0 +1,733 @@
+.job-page {
+  padding: 28px 32px 45px;
+}
+
+
+.job-header {
+  margin-bottom: 20px;
+}
+
+
+.job-header p {
+  margin: 0;
+  color: #71879a;
+  font-size: 12px;
+}
+
+
+.job-header h1 {
+  margin: 5px 0;
+  color: #153e67;
+  font-size: 28px;
+}
+
+
+.job-header span {
+  color: #617b93;
+  font-size: 12px;
+}
+
+
+.job-kpi-grid {
+  display: grid;
+
+  grid-template-columns:
+    repeat(4, minmax(0, 1fr));
+
+  gap: 14px;
+
+  margin-bottom: 18px;
+}
+
+
+.job-kpi {
+  padding: 20px;
+
+  background: #ffffff;
+
+  border-radius: 15px;
+}
+
+
+.job-kpi span {
+  display: block;
+
+  color: #71879a;
+
+  font-size: 11px;
+}
+
+
+.job-kpi strong {
+  display: block;
+
+  margin-top: 8px;
+
+  color: #17456e;
+
+  font-size: 24px;
+}
+
+
+.job-filter {
+  display: flex;
+
+  gap: 14px;
+
+  margin-bottom: 18px;
+
+  padding: 18px;
+
+  background: #ffffff;
+
+  border-radius: 15px;
+}
+
+
+.job-filter > div {
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 6px;
+}
+
+
+.job-filter label {
+  color: #60798f;
+
+  font-size: 11px;
+
+  font-weight: 700;
+}
+
+
+.job-filter select {
+  min-width: 220px;
+
+  height: 40px;
+
+  padding: 0 11px;
+
+  border:
+    1px solid #cbddea;
+
+  border-radius: 9px;
+
+  background: #ffffff;
+}
+
+
+.job-panel,
+.job-detail-panel {
+  margin-bottom: 18px;
+
+  padding: 24px;
+
+  background: #ffffff;
+
+  border-radius: 17px;
+}
+
+
+.job-panel-header h2 {
+  margin: 0;
+
+  color: #173f66;
+
+  font-size: 19px;
+}
+
+
+.job-panel-header p {
+  margin: 5px 0 16px;
+
+  color: #74899b;
+
+  font-size: 11px;
+}
+
+
+.job-table-wrapper {
+  overflow-x: auto;
+}
+
+
+.job-table-wrapper table {
+  width: 100%;
+
+  border-collapse: collapse;
+
+  font-size: 12px;
+}
+
+
+.job-table-wrapper th,
+.job-table-wrapper td {
+  padding: 12px 10px;
+
+  border-bottom:
+    1px solid #e1ebf3;
+
+  text-align: left;
+
+  white-space: nowrap;
+}
+
+
+.job-table-wrapper th {
+  background: #eef6fc;
+
+  color: #315a7d;
+}
+
+
+.job-table-wrapper tbody tr {
+  cursor: pointer;
+}
+
+
+.job-table-wrapper tbody tr:hover {
+  background: #f3f9fd;
+}
+
+
+.job-status {
+  display: inline-block;
+
+  padding: 4px 8px;
+
+  border-radius: 7px;
+
+  font-size: 10px;
+
+  font-weight: 700;
+}
+
+
+.job-status.success {
+  background: #e7f5ec;
+  color: #31734b;
+}
+
+
+.job-status.failed {
+  background: #fff0f0;
+  color: #a94444;
+}
+
+
+.job-status.running {
+  background: #eaf4ff;
+  color: #286493;
+}
+
+
+.job-status.pending {
+  background: #f1f3f5;
+  color: #6e7d89;
+}
+
+
+.job-detail-header {
+  display: flex;
+
+  align-items: center;
+
+  justify-content: space-between;
+
+  gap: 15px;
+
+  margin-bottom: 18px;
+}
+
+
+.job-detail-header span {
+  color: #718ca3;
+
+  font-size: 9px;
+
+  font-weight: 800;
+
+  letter-spacing: 1px;
+}
+
+
+.job-detail-header h2 {
+  margin: 4px 0 0;
+
+  color: #153e67;
+}
+
+
+.job-detail-header button {
+  padding: 8px 13px;
+
+  border:
+    1px solid #cbddea;
+
+  border-radius: 8px;
+
+  background: #f7fbff;
+
+  color: #245b8c;
+
+  cursor: pointer;
+}
+
+
+.job-detail-grid {
+  display: grid;
+
+  grid-template-columns:
+    repeat(4, minmax(0, 1fr));
+
+  gap: 12px;
+
+  margin-bottom: 16px;
+}
+
+
+.job-detail-item,
+.job-long-detail {
+  padding: 14px;
+
+  background: #f7fbff;
+
+  border-radius: 10px;
+}
+
+
+.job-detail-item span,
+.job-long-detail span {
+  display: block;
+
+  margin-bottom: 5px;
+
+  color: #71879a;
+
+  font-size: 10px;
+}
+
+
+.job-detail-item strong {
+  color: #315a7d;
+
+  font-size: 13px;
+}
+
+
+.job-long-detail {
+  margin-bottom: 10px;
+}
+
+
+.job-long-detail code {
+  color: #294e6c;
+
+  font-size: 11px;
+
+  word-break: break-all;
+}
+
+
+.job-error-box {
+  margin-top: 15px;
+
+  padding: 16px;
+
+  background: #fff5f5;
+
+  border-left:
+    3px solid #cf6666;
+
+  border-radius: 9px;
+}
+
+
+.job-error-box strong {
+  color: #963f3f;
+}
+
+
+.job-error-box p {
+  margin: 6px 0 0;
+
+  color: #805656;
+
+  font-size: 11px;
+}
+
+
+.job-loading {
+  padding: 60px;
+
+  text-align: center;
+
+  color: #71869a;
+}
+
+
+@media (
+  max-width: 1000px
+) {
+
+  .job-kpi-grid,
+  .job-detail-grid {
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
+  }
+}
+
+
+@media (
+  max-width: 600px
+) {
+
+  .job-page {
+    padding: 18px 14px 30px;
+  }
+
+
+  .job-kpi-grid,
+  .job-detail-grid {
+    grid-template-columns: 1fr;
+  }
+
+
+  .job-filter {
+    flex-direction: column;
+  }
+
+
+  .job-filter select {
+    width: 100%;
+
+    min-width: 0;
+  }
+}
+/* =============================
+   Dataset 선택 Toolbar
+   ============================= */
+
+.job-dataset-toolbar {
+  display: flex;
+  align-items: flex-end;
+  gap: 10px;
+
+  margin-bottom: 18px;
+  padding: 18px;
+
+  background: #ffffff;
+  border-radius: 15px;
+}
+
+
+.job-dataset-toolbar > div:first-child {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+
+.job-dataset-toolbar label {
+  color: #60798f;
+
+  font-size: 11px;
+  font-weight: 700;
+}
+
+
+.job-dataset-toolbar input {
+  width: 130px;
+  height: 38px;
+
+  box-sizing: border-box;
+
+  padding: 0 10px;
+
+  border: 1px solid #cbddea;
+  border-radius: 8px;
+}
+
+
+.job-dataset-toolbar button {
+  height: 38px;
+
+  padding: 0 14px;
+
+  border: 0;
+  border-radius: 8px;
+
+  background: #276fa7;
+  color: #ffffff;
+
+  font-weight: 700;
+
+  cursor: pointer;
+}
+
+
+.job-current-dataset {
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 4px;
+
+  margin-left: 8px;
+
+  color: #71879a;
+
+  font-size: 10px;
+}
+
+
+.job-current-dataset strong {
+  color: #17456e;
+
+  font-size: 15px;
+}
+
+
+.job-create-open-button {
+  margin-left: auto;
+}
+
+
+/* =============================
+   신규 Job 요청
+   ============================= */
+
+.job-create-panel {
+  margin-bottom: 18px;
+  padding: 24px;
+
+  background: #ffffff;
+  border-radius: 17px;
+}
+
+
+.job-create-grid {
+  display: grid;
+
+  grid-template-columns:
+    repeat(2, minmax(0, 1fr));
+
+  gap: 14px;
+}
+
+
+.job-create-grid label {
+  display: flex;
+  flex-direction: column;
+
+  gap: 7px;
+
+  color: #60798f;
+
+  font-size: 11px;
+  font-weight: 700;
+}
+
+
+.job-create-grid input,
+.job-create-grid select {
+  height: 40px;
+
+  box-sizing: border-box;
+
+  padding: 0 11px;
+
+  border: 1px solid #cbddea;
+  border-radius: 8px;
+
+  background: #ffffff;
+}
+
+
+.job-create-full {
+  grid-column: 1 / -1;
+}
+
+
+.job-command-actions {
+  display: flex;
+
+  justify-content: flex-end;
+
+  gap: 9px;
+
+  margin-top: 18px;
+}
+
+
+.job-command-actions button,
+.job-retry-panel button {
+  padding: 9px 14px;
+
+  border: 0;
+  border-radius: 8px;
+
+  background: #276fa7;
+  color: #ffffff;
+
+  font-weight: 700;
+
+  cursor: pointer;
+}
+
+
+.job-command-actions .secondary {
+  border: 1px solid #cbddea;
+
+  background: #ffffff;
+
+  color: #526d83;
+}
+
+
+.job-command-actions button:disabled,
+.job-retry-panel button:disabled {
+  opacity: 0.45;
+
+  cursor: default;
+}
+
+
+/* =============================
+   Command Message
+   ============================= */
+
+.job-command-message {
+  margin-bottom: 18px;
+  padding: 13px 15px;
+
+  border-radius: 10px;
+
+  background: #edf7ef;
+
+  color: #3e7050;
+
+  font-size: 12px;
+}
+
+
+/* =============================
+   FAILED Retry
+   ============================= */
+
+.job-retry-panel {
+  margin-top: 18px;
+
+  padding: 18px;
+
+  border: 1px solid #efd0d0;
+  border-radius: 11px;
+
+  background: #fffafa;
+}
+
+
+.job-retry-panel h3 {
+  margin: 0;
+
+  color: #8d4141;
+
+  font-size: 15px;
+}
+
+
+.job-retry-panel p {
+  margin: 6px 0 13px;
+
+  color: #816666;
+
+  font-size: 11px;
+}
+
+
+.job-retry-panel input {
+  width: 100%;
+
+  box-sizing: border-box;
+
+  height: 40px;
+
+  margin-bottom: 10px;
+
+  padding: 0 11px;
+
+  border: 1px solid #e3c7c7;
+  border-radius: 8px;
+}
+
+
+.job-empty {
+  padding: 30px !important;
+
+  text-align: center !important;
+
+  color: #71879a;
+}
+
+
+/* =============================
+   Responsive
+   ============================= */
+
+@media (max-width: 800px) {
+
+  .job-dataset-toolbar {
+    align-items: stretch;
+
+    flex-direction: column;
+  }
+
+
+  .job-create-open-button {
+    margin-left: 0;
+  }
+
+
+  .job-create-grid {
+    grid-template-columns: 1fr;
+  }
+
+
+  .job-create-full {
+    grid-column: auto;
+  }
+}
+/* 실제 Hadoop 실행 영역 */
+.job-execute-panel {
+  margin-top: 20px;
+  padding: 20px;
+
+  border: 1px solid #bfd7ee;
+  border-radius: 14px;
+
+  background: #f5faff;
+}
+
+.job-execute-panel h3 {
+  margin: 0 0 8px;
+  font-size: 17px;
+}
+
+.job-execute-panel p {
+  margin: 0 0 16px;
+  line-height: 1.6;
+}
+
+.job-execute-panel button {
+  padding: 10px 18px;
+  border: 0;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.job-execute-panel button:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}

@@ -1,0 +1,42 @@
+# 저장소 최상위가 EduScope이고 백엔드가 eduscope-web 하위 폴더일 때
+# 이 파일을 C:\EduScope\render.yaml 위치로 복사해 사용한다.
+services:
+  - type: web
+    name: eduscope-api
+    runtime: docker
+    plan: free
+    rootDir: eduscope-web
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    healthCheckPath: /actuator/health
+    envVars:
+      - key: SPRING_PROFILES_ACTIVE
+        value: demo
+      - key: SERVER_PORT
+        value: 10000
+      - key: EDUSCOPE_DB_URL
+        sync: false
+      - key: EDUSCOPE_DB_USERNAME
+        sync: false
+      - key: EDUSCOPE_DB_PASSWORD
+        sync: false
+      - key: EDUSCOPE_LOG_FILE
+        value: /tmp/eduscope-web.log
+      - key: EDUSCOPE_LOG_LEVEL
+        value: INFO
+      - key: JAVA_OPTS
+        value: -XX:MaxRAMPercentage=70.0 -XX:+UseSerialGC
+      - key: EDUSCOPE_HADOOP_SSH_HOST
+        value: disabled.invalid
+      - key: EDUSCOPE_HADOOP_SSH_PORT
+        value: 22
+      - key: EDUSCOPE_HADOOP_SSH_USER
+        value: disabled
+      - key: EDUSCOPE_HADOOP_SSH_PRIVATE_KEY
+        value: /tmp/disabled-key
+      - key: EDUSCOPE_HADOOP_ENV_SCRIPT
+        value: /tmp/disabled-hadoop-env.sh
+      - key: EDUSCOPE_HADOOP_JAR
+        value: /tmp/disabled-mapreduce.jar
+      - key: EDUSCOPE_HADOOP_TIMEOUT_MINUTES
+        value: 1

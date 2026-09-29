@@ -1,0 +1,153 @@
+.course-compare-page {
+  padding: 32px 36px 50px;
+}
+
+.compare-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  margin-bottom: 24px;
+}
+
+.compare-header p {
+  margin: 0;
+  color: #6d8296;
+  font-size: 13px;
+}
+
+.compare-header h1 {
+  margin: 5px 0 0;
+  color: #153e67;
+}
+
+.compare-header a {
+  color: #245b8c;
+}
+
+.compare-controls {
+  display: flex;
+  align-items: flex-end;
+  gap: 16px;
+
+  margin-bottom: 18px;
+  padding: 22px;
+
+  background: white;
+  border-radius: 16px;
+}
+
+.compare-controls > div {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.compare-controls label {
+  color: #617b94;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.compare-controls select {
+  min-width: 230px;
+  padding: 10px 12px;
+
+  border: 1px solid #cfdfeb;
+  border-radius: 9px;
+  background: white;
+}
+
+.same-module-option {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+
+  padding-bottom: 10px;
+}
+
+.compare-notice {
+  margin-bottom: 18px;
+  padding: 16px 20px;
+
+  background: #f7fbff;
+  border-radius: 12px;
+
+  color: #59738b;
+}
+
+.compare-summary-grid {
+  display: grid;
+
+  grid-template-columns:
+    repeat(4, minmax(0, 1fr));
+
+  gap: 14px;
+
+  margin-bottom: 18px;
+}
+
+.comparison-card {
+  padding: 20px;
+
+  background: white;
+  border-radius: 16px;
+}
+
+.comparison-card h3 {
+  margin: 0 0 16px;
+
+  color: #335a7c;
+  font-size: 14px;
+}
+
+.comparison-values {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.comparison-values div {
+  padding: 12px;
+
+  background: #f7fbff;
+  border-radius: 10px;
+}
+
+.comparison-values span {
+  display: block;
+
+  margin-bottom: 5px;
+
+  color: #788da0;
+  font-size: 11px;
+}
+
+.comparison-values strong {
+  color: #174a75;
+}
+
+.comparison-card p {
+  margin: 15px 0 0;
+
+  color: #647d94;
+  font-size: 12px;
+}
+
+.compare-panel {
+  padding: 26px;
+
+  background: white;
+  border-radius: 18px;
+}
+
+.compare-panel h2 {
+  margin: 0 0 6px;
+  color: #173f66;
+}
+
+.compare-panel > p {
+  margin: 0 0 22px;
+
+  color: #73879a;
+  font-size: 13px;
+}

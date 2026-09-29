@@ -1,0 +1,208 @@
+.app-layout {
+  min-height: 100vh;
+
+  display: flex;
+
+  background: #eef6ff;
+}
+
+.sidebar {
+  width: 230px;
+
+  min-height: 100vh;
+
+  padding: 28px 20px;
+
+  background:
+    linear-gradient(
+      180deg,
+      #163b63,
+      #245b8c
+    );
+
+  color: white;
+}
+
+.sidebar-logo {
+  margin-bottom: 32px;
+
+  font-size: 24px;
+  font-weight: 800;
+}
+
+.sidebar nav {
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 8px;
+}
+
+.sidebar nav a {
+  padding: 12px 14px;
+
+  color: #dbeeff;
+
+  text-decoration: none;
+
+  border-radius: 10px;
+}
+
+.sidebar nav a:hover,
+.sidebar nav a.active {
+  background:
+    rgba(
+      255,
+      255,
+      255,
+      0.15
+    );
+
+  color: white;
+}
+
+.role-label {
+  margin-top: 20px;
+
+  color: #a9cae7;
+
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.app-main {
+  flex: 1;
+
+  min-width: 0;
+}
+
+.top-header {
+  height: 70px;
+
+  padding: 0 32px;
+
+  display: flex;
+
+  justify-content:
+    space-between;
+
+  align-items: center;
+
+  background: white;
+
+  border-bottom:
+    1px solid #dce8f2;
+}
+
+.header-title {
+  color: #163b63;
+
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.current-user {
+  display: flex;
+
+  flex-direction: column;
+
+  align-items: flex-end;
+
+  gap: 3px;
+}
+
+.current-user strong {
+  color: #23496c;
+}
+
+.current-user span {
+  color: #778ca0;
+
+  font-size: 12px;
+}
+
+.page-state {
+  min-height: 100vh;
+
+  display: flex;
+
+  flex-direction: column;
+
+  align-items: center;
+
+  justify-content: center;
+}
+
+.sidebar-section-title {
+  margin:
+    20px 0 6px;
+
+  padding:
+    0 12px;
+
+  color: #8fb8da;
+
+  font-size: 11px;
+  font-weight: 700;
+
+  text-transform: uppercase;
+
+  letter-spacing: 0.8px;
+}
+/* 권한이 없는 Sidebar 메뉴 */
+.sidebar-link.locked {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  padding: 10px 12px;
+
+  margin: 3px 0;
+
+  border-radius: 8px;
+
+  background: #fff1f1;
+  color: #b14b4b;
+
+  cursor: not-allowed;
+
+  opacity: 0.72;
+}
+
+
+/* 잠금 아이콘 */
+.sidebar-link.locked .lock-icon {
+  font-size: 12px;
+}
+
+
+/* Hover해도 클릭 가능한 메뉴처럼 보이지 않게 한다. */
+.sidebar-link.locked:hover {
+  background: #ffe7e7;
+}
+.logout-button {
+  padding: 7px 11px;
+
+  border: 1px solid #c8d9e7;
+  border-radius: 8px;
+
+  background: #ffffff;
+
+  color: #315d80;
+
+  font-size: 11px;
+  font-weight: 700;
+
+  cursor: pointer;
+}
+
+
+.logout-button:hover {
+  background: rgb(255, 128, 192);
+}
+
+
+.logout-button:disabled {
+  opacity: 0.6;
+  cursor: default;
+}

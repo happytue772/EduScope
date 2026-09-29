@@ -1,0 +1,102 @@
+SET SQLBLANKLINES ON
+
+-- ============================================================
+-- 23. DATA_QUALITY_STAT
+-- ============================================================
+
+CREATE TABLE DATA_QUALITY_STAT (
+    job_id NUMBER NOT NULL,
+    dataset_file_id NUMBER NOT NULL,
+    quality_type VARCHAR2(50) NOT NULL,
+    record_count NUMBER DEFAULT 0 NOT NULL,
+    sample_message VARCHAR2(1000),
+    created_at TIMESTAMP NOT NULL,
+    CONSTRAINT PK_DATA_QUALITY PRIMARY KEY (job_id, dataset_file_id, quality_type)
+);
+
+CREATE INDEX IX_DQ_FILE_TYPE
+ON DATA_QUALITY_STAT (dataset_file_id, quality_type);
+
+
+-- ============================================================
+-- 24. AUDIT_LOG
+-- ============================================================
+
+CREATE TABLE AUDIT_LOG (
+    audit_id NUMBER NOT NULL,
+    user_id NUMBER,
+    action_type VARCHAR2(50) NOT NULL,
+    target_type VARCHAR2(50),
+    target_id VARCHAR2(100),
+    request_uri VARCHAR2(1000),
+    description VARCHAR2(2000),
+    ip_address VARCHAR2(64),
+    created_at TIMESTAMP NOT NULL,
+    CONSTRAINT PK_AUDIT_LOG PRIMARY KEY (audit_id)
+);
+
+CREATE INDEX IX_AUDIT_USER_DATE
+ON AUDIT_LOG (user_id, created_at);
+
+CREATE INDEX IX_AUDIT_ACTION_DATE
+ON AUDIT_LOG (action_type, created_at);
+SELECT
+    TABLE_NAME
+FROM USER_TABLES
+ORDER BY TABLE_NAME;
+SELECT TABLE_NAME
+FROM USER_TABLES
+WHERE TABLE_NAME IN (
+    'DATASET',
+    'DATASET_FILE',
+    'APP_USER',
+    'APP_ROLE',
+    'APP_USER_ROLE',
+    'COURSE_PRESENTATION',
+    'OULAD_STUDENT',
+    'STUDENT_COURSE',
+    'STUDENT_REGISTRATION',
+    'ASSESSMENT',
+    'STUDENT_ASSESSMENT',
+    'VLE_MATERIAL',
+    'ANALYSIS_JOB',
+    'STUDENT_ACTIVITY_STAT',
+    'COURSE_ACTIVITY_STAT',
+    'COURSE_WEEKLY_ACTIVITY_STAT',
+    'VLE_ACTIVITY_STAT',
+    'ASSESSMENT_STAT',
+    'REGISTRATION_STAT',
+    'COURSE_RESULT_STAT',
+    'ACTIVITY_RESULT_STAT',
+    'STUDENT_LEARNING_SUMMARY_STAT',
+    'DATA_QUALITY_STAT',
+    'AUDIT_LOG'
+)
+ORDER BY TABLE_NAME;SELECT COUNT(*)
+FROM USER_TABLES
+WHERE TABLE_NAME IN (
+    'DATASET',
+    'DATASET_FILE',
+    'APP_USER',
+    'APP_ROLE',
+    'APP_USER_ROLE',
+    'COURSE_PRESENTATION',
+    'OULAD_STUDENT',
+    'STUDENT_COURSE',
+    'STUDENT_REGISTRATION',
+    'ASSESSMENT',
+    'STUDENT_ASSESSMENT',
+    'VLE_MATERIAL',
+    'ANALYSIS_JOB',
+    'STUDENT_ACTIVITY_STAT',
+    'COURSE_ACTIVITY_STAT',
+    'COURSE_WEEKLY_ACTIVITY_STAT',
+    'VLE_ACTIVITY_STAT',
+    'ASSESSMENT_STAT',
+    'REGISTRATION_STAT',
+    'COURSE_RESULT_STAT',
+    'ACTIVITY_RESULT_STAT',
+    'STUDENT_LEARNING_SUMMARY_STAT',
+    'DATA_QUALITY_STAT',
+    'AUDIT_LOG'
+);
