@@ -249,6 +249,35 @@ function LoginPage() {
         setError(
           ''
         )
+		/**
+		 * Render Free 공개 Demo 서버 Cold Start.
+		 *
+		 * 서버가 Sleep 상태에서 시작 중일 때 발생하는
+		 * 502 / 503 / 504 오류를
+		 * 계정 오류로 잘못 표시하지 않는다.
+		 */
+		if (
+		  loginError?.code
+		  ===
+		  'DEMO_SERVER_WAKING'
+		) {
+
+		  setError(
+		    '공개 데모 서버가 시작 중입니다. 잠시 후 다시 로그인해주세요.'
+		  )
+
+
+		  /*
+		   * 입력한 비밀번호는 유지하지 않는다.
+		   * 로그인 ID는 그대로 유지한다.
+		   */
+		  setPassword(
+		    ''
+		  )
+
+
+		  return
+		}
 
 
         /**
