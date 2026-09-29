@@ -3,7 +3,7 @@
   "rewrites": [
     {
       "source": "/api/:path*",
-      "destination": "https://arch-promotional-sacrifice-downloading.trycloudflare.com/api/:path*"
+      "destination": "https://eduscope-8ekl.onrender.com/api/:path*"
     },
     {
       "source": "/(.*)",
