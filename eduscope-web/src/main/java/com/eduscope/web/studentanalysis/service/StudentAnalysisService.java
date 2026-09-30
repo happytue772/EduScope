@@ -27,11 +27,34 @@ public class StudentAnalysisService {
 
     public List<StudentSearchResponse> search(
             String keyword,
-            Long coursePresentationId) {
+            Long coursePresentationId,
+            Integer offset,
+            Integer limit) {
+
+        int safeOffset =
+            offset == null
+                ? 0
+                : Math.max(
+                    0,
+                    offset
+                );
+
+        int safeLimit =
+            limit == null
+                ? 100
+                : Math.min(
+                    Math.max(
+                        1,
+                        limit
+                    ),
+                    500
+                );
 
         return repository.search(
             keyword,
-            coursePresentationId
+            coursePresentationId,
+            safeOffset,
+            safeLimit
         );
     }
 
