@@ -10,6 +10,11 @@ import {
   logout
 } from '../../api/authApi'
 
+import {
+  isSnapshotMode,
+  leaveSnapshotMode
+} from '../../snapshot/snapshotMode'
+
 
 /**
  * EduScope 로그아웃 버튼.
@@ -31,6 +36,25 @@ function LogoutButton() {
     try {
 
       setLoading(true)
+
+      /*
+       * Snapshot 모드는 Backend Session을 사용하지 않는다.
+       */
+      if (
+        isSnapshotMode()
+      ) {
+
+        leaveSnapshotMode()
+
+        navigate(
+          '/login',
+          {
+            replace: true
+          }
+        )
+
+        return
+      }
 
       await logout()
 
