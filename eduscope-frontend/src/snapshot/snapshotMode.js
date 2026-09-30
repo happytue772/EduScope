@@ -5,6 +5,7 @@ const SNAPSHOT_FILE =
   '/demo-snapshot/snapshot.json'
 
 let snapshotPromise = null
+const shardPromises = new Map()
 
 /**
  * Oracle/Render와 무관하게 동작하는
@@ -114,6 +115,88 @@ async function loadSnapshot() {
   }
 
   return snapshotPromise
+}
+
+async function loadSnapshotShard(
+  relativePath
+) {
+  if (!relativePath) {
+    throw new Error(
+      '학생 상세 스냅샷 경로가 없습니다.'
+    )
+  }
+
+  if (!shardPromises.has(relativePath)) {
+    const shardUrl =
+      '/demo-snapshot/' + relativePath
+
+    const promise =
+      fetch(
+        shardUrl,
+        {
+          method: 'GET',
+          cache: 'no-store'
+        }
+      )
+      .then(
+        async response => {
+          if (!response.ok) {
+            throw new Error(
+              '학생 상세 스냅샷을 찾을 수 없습니다.'
+            )
+          }
+
+          const shard =
+            await response.json()
+
+          if (
+            !shard
+            ||
+            typeof shard !== 'object'
+            ||
+            !shard.responses
+          ) {
+            throw new Error(
+              '학생 상세 스냅샷 형식이 올바르지 않습니다.'
+            )
+          }
+
+          return shard
+        }
+      )
+
+    shardPromises.set(
+      relativePath,
+      promise
+    )
+  }
+
+  return shardPromises.get(
+    relativePath
+  )
+}
+
+function findStudentIndexRow(
+  snapshot,
+  studentCourseId
+) {
+  const index =
+    Array.isArray(
+      snapshot.studentSearchIndex
+    )
+      ? snapshot.studentSearchIndex
+      : []
+
+  return index.find(
+    row =>
+      String(
+        row.studentCourseId
+      )
+      ===
+      String(
+        studentCourseId
+      )
+  )
 }
 
 /**
@@ -271,6 +354,70 @@ export async function resolveSnapshotRequest(
     normalizeSnapshotKey(
       requestUrl
     )
+
+  const studentDetailMatch =
+    url.pathname.match(
+      /^\/api\/student-analysis\/(\d+)$/
+    )
+
+  if (
+    studentDetailMatch
+    &&
+    snapshot.metadata?.storageMode
+      ===
+      'SHARDED_V1'
+  ) {
+    const studentCourseId =
+      studentDetailMatch[1]
+
+    const indexRow =
+      findStudentIndexRow(
+        snapshot,
+        studentCourseId
+      )
+
+    if (
+      !indexRow
+      ||
+      !indexRow.snapshotShard
+    ) {
+      return {
+        status: 404,
+        data: {
+          message:
+            '학생 상세 스냅샷 위치를 찾을 수 없습니다.'
+        }
+      }
+    }
+
+    const shard =
+      await loadSnapshotShard(
+        indexRow.snapshotShard
+      )
+
+    if (
+      !Object.prototype
+        .hasOwnProperty
+        .call(
+          shard.responses,
+          key
+        )
+    ) {
+      return {
+        status: 404,
+        data: {
+          message:
+            '현재 학생 상세 스냅샷에 저장되지 않은 조회입니다.'
+        }
+      }
+    }
+
+    return {
+      status: 200,
+      data:
+        shard.responses[key]
+    }
+  }
 
   if (
     !Object.prototype
