@@ -77,7 +77,7 @@ function Get-Utf8ResponseContent {
                 $stream.Position = 0
             }
 
-            $reader = New-Object System.IO.StreamReader(
+            $reader = [System.IO.StreamReader]::new(
                 $stream,
                 [System.Text.Encoding]::UTF8,
                 $true,
