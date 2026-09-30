@@ -9,6 +9,11 @@ import {
 import {
   login
 } from '../api/authApi'
+
+import {
+  enterSnapshotMode,
+  isSnapshotAvailable
+} from '../snapshot/snapshotMode'
 import '../styles/auth.css'
 import '../styles/login.css'
 import '../styles/cleanLogin.css'
@@ -85,6 +90,43 @@ function LoginPage() {
     loading,
     setLoading
   ] = useState(false)
+
+  const [
+    snapshotAvailable,
+    setSnapshotAvailable
+  ] = useState(false)
+  /**
+   * 실제 Snapshot 파일 존재 여부 확인.
+   *
+   * snapshot.json이 배포된 경우에만
+   * 읽기 전용 진입 버튼을 표시한다.
+   */
+  useEffect(() => {
+
+    let mounted = true
+
+    async function checkSnapshot() {
+
+      const available =
+        await isSnapshotAvailable()
+
+      if (mounted) {
+
+        setSnapshotAvailable(
+          available
+        )
+      }
+    }
+
+    checkSnapshot()
+
+    return () => {
+      mounted = false
+    }
+
+  }, [])
+
+
   /**
    * 반복 로그인 실패 제한 Modal 표시 여부.
    */
@@ -248,6 +290,23 @@ function LoginPage() {
       )
     }
   }
+  /**
+   * Oracle/Render가 없어도 사용할 수 있는
+   * 읽기 전용 Snapshot 데모 진입.
+   */
+  function handleSnapshotDemo() {
+
+    enterSnapshotMode()
+
+    navigate(
+      '/',
+      {
+        replace: true
+      }
+    )
+  }
+
+
   /**
    * Enter Key 로그인.
    */
@@ -864,6 +923,21 @@ function LoginPage() {
                 회원가입
               </Link>
             </div>
+
+            {snapshotAvailable && (
+              <div className="clean-login-signup">
+                <span>
+                  서버 없이 저장된 분석 결과만 확인하려면
+                </span>
+                <button
+                  type="button"
+                  className="snapshot-demo-button"
+                  onClick={handleSnapshotDemo}
+                >
+                  저장된 분석 결과 보기
+                </button>
+              </div>
+            )}
             {/* Security Status */}
             <div className="clean-login-security">
               <span className="clean-login-security-dot" />
