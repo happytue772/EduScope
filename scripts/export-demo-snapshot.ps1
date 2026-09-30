@@ -110,7 +110,7 @@ $loginBody = @{
 
 $loginBody[$csrf.parameterName] = $csrf.token
 
-Invoke-WebRequest -Uri ($BaseUrl.TrimEnd('/') + "/api/auth/login") -Method Post -WebSession $script:Session -ContentType "application/x-www-form-urlencoded" -Body $loginBody -Headers @{ Accept = "application/json" } | Out-Null
+Invoke-WebRequest -Uri ($BaseUrl.TrimEnd('/') + "/api/auth/login") -Method Post -WebSession $script:Session -ContentType "application/x-www-form-urlencoded" -Body $loginBody -Headers @{ Accept = "application/json" } -UseBasicParsing | Out-Null
 
 Remove-Variable password
 
