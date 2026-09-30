@@ -29,7 +29,6 @@ function Normalize-ApiKey {
         }
 
         $split = $part.Split('=', 2)
-
         $name = [System.Uri]::UnescapeDataString($split[0])
 
         $value = if ($split.Length -gt 1) {
@@ -63,7 +62,64 @@ function Normalize-ApiKey {
     return $uri.AbsolutePath + "?" + $query
 }
 
-function Get-ApiJson {
+function Get-Utf8ResponseContent {
+    param(
+        [Parameter(Mandatory = $true)]
+        $Response
+    )
+
+    # Windows PowerShell 5.1에서도 API 본문을 UTF-8 기준으로 읽는다.
+    if ($null -ne $Response.RawContentStream) {
+        try {
+            $stream = $Response.RawContentStream
+
+            if ($stream.CanSeek) {
+                $stream.Position = 0
+            }
+
+            $reader = [System.IO.StreamReader]::new(
+                $stream,
+                [System.Text.Encoding]::UTF8,
+                $true,
+                4096,
+                $true
+            )
+
+            try {
+                return $reader.ReadToEnd()
+            }
+            finally {
+                $reader.Dispose()
+            }
+        }
+        catch {
+            # RawContentStream을 사용할 수 없는 환경에서는 Content로 fallback한다.
+        }
+    }
+
+    return [string]$Response.Content
+}
+
+function Get-JsonRootKind {
+    param(
+        [Parameter(Mandatory = $true)]
+        [string]$Json
+    )
+
+    $trimmed = $Json.TrimStart()
+
+    if ($trimmed.StartsWith("[")) {
+        return "ARRAY"
+    }
+
+    if ($trimmed.StartsWith("{")) {
+        return "OBJECT"
+    }
+
+    return "SCALAR"
+}
+
+function Get-ApiJsonResponse {
     param(
         [Parameter(Mandatory = $true)]
         [string]$Path
@@ -71,7 +127,76 @@ function Get-ApiJson {
 
     Write-Host "GET $Path"
 
-    return Invoke-RestMethod -Uri ($BaseUrl.TrimEnd('/') + $Path) -Method Get -WebSession $script:Session -Headers @{ Accept = "application/json" }
+    $requestParams = @{
+        Uri = $BaseUrl.TrimEnd('/') + $Path
+        Method = "Get"
+        WebSession = $script:Session
+        Headers = @{ Accept = "application/json" }
+        UseBasicParsing = $true
+    }
+
+    $response = Invoke-WebRequest @requestParams
+    $rawJson = Get-Utf8ResponseContent -Response $response
+
+    if ([string]::IsNullOrWhiteSpace($rawJson)) {
+        throw "Empty JSON response: $Path"
+    }
+
+    try {
+        $data = ConvertFrom-Json -InputObject $rawJson
+    }
+    catch {
+        throw "Invalid JSON response: $Path / $($_.Exception.Message)"
+    }
+
+    # RawJson은 최종 Snapshot에 그대로 넣어 원래 JSON Array/Object 구조를 보존한다.
+    return [PSCustomObject]@{
+        Data = $data
+        RawJson = $rawJson.Trim()
+        RootKind = Get-JsonRootKind -Json $rawJson
+    }
+}
+
+function Assert-RootKind {
+    param(
+        [Parameter(Mandatory = $true)]
+        [string]$Path,
+
+        [Parameter(Mandatory = $true)]
+        $Response,
+
+        [Parameter(Mandatory = $true)]
+        [ValidateSet("ARRAY", "OBJECT", "SCALAR")]
+        [string]$Expected
+    )
+
+    if ($Response.RootKind -ne $Expected) {
+        throw ("Unexpected JSON root for {0}. Expected={1}, Actual={2}" -f $Path, $Expected, $Response.RootKind)
+    }
+}
+
+function Sanitize-PublicResponseJson {
+    param(
+        [Parameter(Mandatory = $true)]
+        [string]$Path,
+
+        [Parameter(Mandatory = $true)]
+        [string]$RawJson
+    )
+
+    $result = $RawJson
+
+    # 공개 Snapshot에는 Windows staging 경로를 노출하지 않는다.
+    if ($Path.StartsWith("/api/analysis-job-overview")) {
+        $result = [regex]::Replace(
+            $result,
+            '("resultFilePath"\s*:\s*)"(?:\\.|[^"\\])*"',
+            '$1null',
+            [System.Text.RegularExpressions.RegexOptions]::IgnoreCase
+        )
+    }
+
+    return $result
 }
 
 function Save-Response {
@@ -80,15 +205,59 @@ function Save-Response {
         [string]$Path,
 
         [Parameter(Mandatory = $true)]
-        $Data
+        $Response
     )
 
     $key = Normalize-ApiKey -Path $Path
-    $script:Responses[$key] = $Data
+
+    $script:Responses[$key] =
+        Sanitize-PublicResponseJson -Path $Path -RawJson $Response.RawJson
+}
+
+function Assert-PublicSnapshotSafety {
+    param(
+        [Parameter(Mandatory = $true)]
+        [string]$Json
+    )
+
+    $checks = @(
+        [PSCustomObject]@{
+            Name = "passwordHash field"
+            Pattern = '"passwordHash"\s*:'
+        },
+        [PSCustomObject]@{
+            Name = "ipAddress field"
+            Pattern = '"ipAddress"\s*:'
+        },
+        [PSCustomObject]@{
+            Name = "database password variable"
+            Pattern = 'EDUSCOPE_DB_PASSWORD'
+        },
+        [PSCustomObject]@{
+            Name = "private key"
+            Pattern = '-----BEGIN [A-Z ]*PRIVATE KEY-----'
+        },
+        [PSCustomObject]@{
+            Name = "Windows absolute path"
+            Pattern = '[A-Za-z]:\\\\'
+        }
+    )
+
+    foreach ($check in $checks) {
+        if (
+            [regex]::IsMatch(
+                $Json,
+                $check.Pattern,
+                [System.Text.RegularExpressions.RegexOptions]::IgnoreCase
+            )
+        ) {
+            throw ("Public Snapshot safety check failed: {0}" -f $check.Name)
+        }
+    }
 }
 
 Write-Host ""
-Write-Host "EduScope 실제 API Snapshot Export"
+Write-Host "EduScope API Snapshot Export"
 Write-Host "Base URL: $BaseUrl"
 Write-Host ""
 
@@ -101,7 +270,14 @@ $password = [System.Net.NetworkCredential]::new(
 
 $script:Session = New-Object Microsoft.PowerShell.Commands.WebRequestSession
 
-$csrf = Invoke-RestMethod -Uri ($BaseUrl.TrimEnd('/') + "/api/auth/csrf") -Method Get -WebSession $script:Session -Headers @{ Accept = "application/json" }
+$csrfParams = @{
+    Uri = $BaseUrl.TrimEnd('/') + "/api/auth/csrf"
+    Method = "Get"
+    WebSession = $script:Session
+    Headers = @{ Accept = "application/json" }
+}
+
+$csrf = Invoke-RestMethod @csrfParams
 
 $loginBody = @{
     username = $LoginId
@@ -110,7 +286,17 @@ $loginBody = @{
 
 $loginBody[$csrf.parameterName] = $csrf.token
 
-Invoke-WebRequest -Uri ($BaseUrl.TrimEnd('/') + "/api/auth/login") -Method Post -WebSession $script:Session -ContentType "application/x-www-form-urlencoded" -Body $loginBody -Headers @{ Accept = "application/json" } -UseBasicParsing | Out-Null
+$loginParams = @{
+    Uri = $BaseUrl.TrimEnd('/') + "/api/auth/login"
+    Method = "Post"
+    WebSession = $script:Session
+    ContentType = "application/x-www-form-urlencoded"
+    Body = $loginBody
+    Headers = @{ Accept = "application/json" }
+    UseBasicParsing = $true
+}
+
+Invoke-WebRequest @loginParams | Out-Null
 
 Remove-Variable password
 
@@ -119,10 +305,13 @@ Write-Host "Login success."
 $script:Responses = @{}
 $studentIndexMap = @{}
 
-$datasets = Get-ApiJson -Path "/api/datasets"
-Save-Response -Path "/api/datasets" -Data $datasets
+$datasetsResponse = Get-ApiJsonResponse -Path "/api/datasets"
+Assert-RootKind -Path "/api/datasets" -Response $datasetsResponse -Expected "ARRAY"
+Save-Response -Path "/api/datasets" -Response $datasetsResponse
 
-foreach ($dataset in @($datasets)) {
+$datasets = @($datasetsResponse.Data)
+
+foreach ($dataset in $datasets) {
     $datasetId = $dataset.datasetId
 
     if ($null -eq $datasetId) {
@@ -138,8 +327,8 @@ foreach ($dataset in @($datasets)) {
 
     foreach ($path in $paths) {
         try {
-            $data = Get-ApiJson -Path $path
-            Save-Response -Path $path -Data $data
+            $response = Get-ApiJsonResponse -Path $path
+            Save-Response -Path $path -Response $response
         }
         catch {
             Write-Warning ("Skip: " + $path + " / " + $_.Exception.Message)
@@ -147,10 +336,13 @@ foreach ($dataset in @($datasets)) {
     }
 }
 
-$courses = Get-ApiJson -Path "/api/courses"
-Save-Response -Path "/api/courses" -Data $courses
+$coursesResponse = Get-ApiJsonResponse -Path "/api/courses"
+Assert-RootKind -Path "/api/courses" -Response $coursesResponse -Expected "ARRAY"
+Save-Response -Path "/api/courses" -Response $coursesResponse
 
-foreach ($course in @($courses)) {
+$courses = @($coursesResponse.Data)
+
+foreach ($course in $courses) {
     $coursePresentationId = $course.coursePresentationId
 
     if ($null -eq $coursePresentationId) {
@@ -167,71 +359,146 @@ foreach ($course in @($courses)) {
 
     foreach ($path in $analysisPaths) {
         try {
-            $data = Get-ApiJson -Path $path
-            Save-Response -Path $path -Data $data
+            $response = Get-ApiJsonResponse -Path $path
+            Save-Response -Path $path -Response $response
         }
         catch {
             Write-Warning ("Skip: " + $path + " / " + $_.Exception.Message)
         }
     }
+}
 
-    try {
-        $offset = 0
-        $pageSize = 500
+# 학생 상세는 Snapshot 전용 Bulk API로 500명씩 수집한다.
+# 기존 /api/student-analysis/{id} 응답 키 구조는 그대로 저장한다.
+$studentOffset = 0
+$studentPageSize = 500
+$bulkPageCount = 0
 
-        while ($true) {
-            $studentSearchPath = "/api/student-analysis/search?coursePresentationId=$coursePresentationId&offset=$offset&limit=$pageSize"
+while ($true) {
+    $bulkPath = (
+        "/api/admin/snapshot/students?offset={0}&limit={1}" -f
+        $studentOffset,
+        $studentPageSize
+    )
 
-            $studentRows = @(
-                Get-ApiJson -Path $studentSearchPath
-            )
+    $bulkResponse = Get-ApiJsonResponse -Path $bulkPath
+    Assert-RootKind -Path $bulkPath -Response $bulkResponse -Expected "OBJECT"
 
-            foreach ($row in $studentRows) {
-                if ($null -eq $row.studentCourseId) {
-                    continue
-                }
+    $bulkData = $bulkResponse.Data
+    $items = @($bulkData.items)
+    $returnedCount = [int]$bulkData.returnedCount
 
-                $studentIndexMap[[string]$row.studentCourseId] = $row
+    if ($returnedCount -eq 0) {
+        break
+    }
 
-                $studentDetailPath = "/api/student-analysis/$($row.studentCourseId)"
+    if ($items.Count -ne $returnedCount) {
+        throw (
+            "Snapshot Bulk count mismatch. returnedCount={0}, items={1}" -f
+            $returnedCount,
+            $items.Count
+        )
+    }
 
-                try {
-                    $studentDetail =
-                        Get-ApiJson -Path $studentDetailPath
-
-                    Save-Response -Path $studentDetailPath -Data $studentDetail
-                }
-                catch {
-                    Write-Warning "Skip student detail: $studentDetailPath"
-                }
-            }
-
-            if ($studentRows.Count -lt $pageSize) {
-                break
-            }
-
-            $offset += $pageSize
+    foreach ($item in $items) {
+        if (
+            $null -eq $item.search
+            -or
+            $null -eq $item.analysis
+            -or
+            $null -eq $item.search.studentCourseId
+        ) {
+            throw "Snapshot Bulk item is missing search/analysis/studentCourseId."
         }
+
+        $studentCourseId = [string]$item.search.studentCourseId
+        $studentIndexMap[$studentCourseId] = $item.search
+
+        $studentDetailPath = (
+            "/api/student-analysis/{0}" -f
+            $studentCourseId
+        )
+
+        # Bulk 응답 내부 analysis는 기존 학생 상세 DTO와 동일한 구조다.
+        $studentDetailRawJson = ConvertTo-Json -InputObject $item.analysis -Depth 30 -Compress
+
+        $studentDetailResponse = [PSCustomObject]@{
+            RawJson = $studentDetailRawJson
+        }
+
+        Save-Response -Path $studentDetailPath -Response $studentDetailResponse
     }
-    catch {
-        Write-Warning "Skip student index for course $coursePresentationId"
+
+    $bulkPageCount++
+
+    Write-Host (
+        "Student bulk page {0}: offset={1}, rows={2}" -f
+        $bulkPageCount,
+        $studentOffset,
+        $returnedCount
+    )
+
+    $nextOffset = [int]$bulkData.nextOffset
+
+    if ($nextOffset -le $studentOffset) {
+        throw (
+            "Snapshot Bulk pagination did not advance. offset={0}, nextOffset={1}" -f
+            $studentOffset,
+            $nextOffset
+        )
+    }
+
+    $studentOffset = $nextOffset
+
+    if (-not [bool]$bulkData.hasMore) {
+        break
     }
 }
 
-$studentSearchIndex =
-    @($studentIndexMap.Values) |
+$studentSearchIndex = @(
+    $studentIndexMap.Values |
     Sort-Object sourceStudentId, coursePresentationId
+)
 
-$snapshot = [ordered]@{
-    metadata = [ordered]@{
-        exportedAtUtc = [DateTime]::UtcNow.ToString("o")
-        source = "EduScope deployed API backed by Oracle Autonomous DB"
-        mode = "READ_ONLY_SNAPSHOT"
-        note = "실제 API 응답을 저장한 공개용 읽기 전용 Snapshot"
-    }
-    responses = $script:Responses
-    studentSearchIndex = $studentSearchIndex
+$metadata = [ordered]@{
+    exportedAtUtc = [DateTime]::UtcNow.ToString("o")
+    source = "EduScope deployed API backed by Oracle Autonomous DB"
+    mode = "READ_ONLY_SNAPSHOT"
+    note = "Public read-only snapshot exported from real API responses"
 }
+
+$metadataJson = ConvertTo-Json -InputObject $metadata -Depth 10
+$studentIndexJson = ConvertTo-Json -InputObject $studentSearchIndex -Depth 20
+
+$responseEntries = New-Object System.Collections.Generic.List[string]
+
+foreach ($key in ($script:Responses.Keys | Sort-Object)) {
+    $jsonKey = ConvertTo-Json -InputObject ([string]$key) -Compress
+    $rawValue = [string]$script:Responses[$key]
+
+    $entry = "    {0}: {1}" -f $jsonKey, $rawValue
+
+    [void]$responseEntries.Add($entry)
+}
+
+$newline = [Environment]::NewLine
+
+$responsesJson = (
+    "{0}{1}{2}{1}  }" -f
+    "{",
+    $newline,
+    ($responseEntries -join ("," + $newline))
+)
+
+$json = @"
+{
+  "metadata": $metadataJson,
+  "responses": $responsesJson,
+  "studentSearchIndex": $studentIndexJson
+}
+"@
+
+Assert-PublicSnapshotSafety -Json $json
 
 $repoRoot = Split-Path -Parent $PSScriptRoot
 
@@ -241,11 +508,10 @@ if ([System.IO.Path]::IsPathRooted($OutputFile)) {
 else {
     $fullOutputPath = Join-Path $repoRoot $OutputFile
 }
+
 $outputDirectory = [System.IO.Path]::GetDirectoryName($fullOutputPath)
 
 New-Item -ItemType Directory -Path $outputDirectory -Force | Out-Null
-
-$json = $snapshot | ConvertTo-Json -Depth 100
 
 [System.IO.File]::WriteAllText(
     $fullOutputPath,
@@ -258,4 +524,7 @@ Write-Host "Snapshot created:"
 Write-Host $fullOutputPath
 Write-Host ""
 Write-Host ("Responses: " + $script:Responses.Count)
+Write-Host ("Courses: " + $courses.Count)
+Write-Host ("Student bulk pages: " + $bulkPageCount)
 Write-Host ("Student index rows: " + $studentSearchIndex.Count)
+Write-Host "Safety check: PASS"
