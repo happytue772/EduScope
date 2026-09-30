@@ -1,3 +1,5 @@
+import { apiFetch } from './apiFetch'
+
 /**
  * 특정 강의 VLE 학습활동 분석 조회.
  */
@@ -5,7 +7,7 @@ export async function getActivityAnalysis(
   coursePresentationId
 ) {
 
-  const response = await fetch(
+  const response = await apiFetch(
     '/api/activity-analysis/'
     + coursePresentationId,
     {
