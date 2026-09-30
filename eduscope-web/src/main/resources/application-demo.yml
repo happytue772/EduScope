@@ -5,6 +5,7 @@ spring:
   main:
     # 필요한 Bean을 실제 사용 시점에 생성한다.
     lazy-initialization: true
+
   # =========================================================
   # Oracle Autonomous Database
   # =========================================================
@@ -14,16 +15,21 @@ spring:
     username: ${EDUSCOPE_DB_USERNAME}
     password: ${EDUSCOPE_DB_PASSWORD}
     driver-class-name: oracle.jdbc.OracleDriver
+
     hikari:
       # 시작할 때 Oracle Connection을 강제로 만들지 않는다.
       minimum-idle: 0
+
       # 공개 Demo에서는 과도한 DB Connection을 만들지 않는다.
       maximum-pool-size: 3
+
       # 음수이면 Hikari 시작 시
       # 최초 DB Connection 검증을 건너뛴다.
       initialization-fail-timeout: -1
+
       # 실제 API 요청 시 Connection 대기 최대 시간.
       connection-timeout: 30000
+
   # =========================================================
   # Spring Data JPA
   # =========================================================
@@ -32,44 +38,57 @@ spring:
       repositories:
         # Repository도 실제 사용 시점에 초기화한다.
         bootstrap-mode: lazy
+
   jpa:
     hibernate:
       ddl-auto: none
+
     open-in-view: false
+
     properties:
       # Hibernate 시작 단계에서
       # Oracle JDBC Metadata 조회를 하지 않는다.
       "hibernate.boot.allow_jdbc_metadata_access": false
+
       # Metadata 조회를 하지 않으므로
       # 실제 사용 DB 정보를 명시한다.
       "jakarta.persistence.database-product-name": Oracle
       "jakarta.persistence.database-major-version": 19
       "jakarta.persistence.database-minor-version": 33
+
   # =========================================================
   # DevTools
   # =========================================================
   devtools:
     restart:
       enabled: false
+
+
 # =========================================================
 # Web Server
 # =========================================================
 server:
   forward-headers-strategy: framework
+
   servlet:
     session:
       cookie:
         http-only: true
         secure: true
         same-site: lax
+
+
 # =========================================================
 # Swagger / OpenAPI
 # =========================================================
 springdoc:
   api-docs:
     enabled: false
+
   swagger-ui:
     enabled: false
+
+
 # =========================================================
 # Actuator
 # =========================================================
@@ -79,27 +98,38 @@ management:
       # Render Health Check가
       # Oracle 초기 연결을 기다리지 않도록 한다.
       enabled: false
+
   endpoint:
     health:
       show-details: never
+
   endpoints:
     web:
       exposure:
         include: health
+
+
 # =========================================================
 # EduScope 공개 Demo
 # =========================================================
 eduscope:
   signup:
-    # 공개 DB에서 신규 사용자가
-    # 임의 생성되는 것을 막는다.
-    enabled: false
+    # Render 환경변수로 공개 회원가입 여부를 제어한다.
+    #
+    # true  = 회원가입 허용
+    # false = 회원가입 차단
+    #
+    # 환경변수가 없으면 기본값 false로 안전하게 차단한다.
+    enabled: ${EDUSCOPE_SIGNUP_ENABLED:false}
+
+
 # =========================================================
 # Logging
 # =========================================================
 logging:
   file:
     name: ${EDUSCOPE_LOG_FILE:/tmp/eduscope-web.log}
+
   level:
     root: INFO
     com.eduscope.web: INFO
