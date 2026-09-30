@@ -1,3 +1,5 @@
+import { apiFetch } from './apiFetch'
+
 /**
  * 특정 강의의 수강/철회 분석 조회.
  */
@@ -5,7 +7,7 @@ export async function getRegistrationAnalysis(
   coursePresentationId
 ) {
 
-  const response = await fetch(
+  const response = await apiFetch(
     '/api/registration-analysis/'
     + coursePresentationId,
     {
