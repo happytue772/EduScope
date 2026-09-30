@@ -1,3 +1,5 @@
+import { apiFetch } from './apiFetch'
+
 /**
  * Dataset의 최신 Data Quality 분석 결과 조회.
  */
@@ -5,7 +7,7 @@ export async function getDataQualitySummary(
   datasetId
 ) {
 
-  const response = await fetch(
+  const response = await apiFetch(
     '/api/analysis/data-quality/summary'
     + '?datasetId='
     + encodeURIComponent(datasetId),
