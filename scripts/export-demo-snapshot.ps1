@@ -481,11 +481,12 @@ foreach ($key in ($script:Responses.Keys | Sort-Object)) {
 
 $newline = [Environment]::NewLine
 
-$responsesJson = (
-    "{0}{1}{2}{1}  }" -f
+$responsesJson = [string]::Concat(
     "{",
     $newline,
-    ($responseEntries -join ("," + $newline))
+    ($responseEntries -join ("," + $newline)),
+    $newline,
+    "  }"
 )
 
 $json = @"
