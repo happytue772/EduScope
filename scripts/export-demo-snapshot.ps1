@@ -402,11 +402,9 @@ while ($true) {
 
     foreach ($item in $items) {
         if (
-            $null -eq $item.search
-            -or
-            $null -eq $item.analysis
-            -or
-            $null -eq $item.search.studentCourseId
+            ($null -eq $item.search) -or
+            ($null -eq $item.analysis) -or
+            ($null -eq $item.search.studentCourseId)
         ) {
             throw "Snapshot Bulk item is missing search/analysis/studentCourseId."
         }
