@@ -50,9 +50,9 @@ function Normalize-ApiKey {
     $query = (
         $sorted |
         ForEach-Object {
-            [System.Uri]::EscapeDataString($_.Name)
-            + "="
-            + [System.Uri]::EscapeDataString($_.Value)
+            $encodedName = [System.Uri]::EscapeDataString($_.Name)
+            $encodedValue = [System.Uri]::EscapeDataString($_.Value)
+            "$encodedName=$encodedValue"
         }
     ) -join "&"
 
@@ -180,14 +180,7 @@ foreach ($course in @($courses)) {
         $pageSize = 500
 
         while ($true) {
-            $studentSearchPath =
-                "/api/student-analysis/search"
-                + "?coursePresentationId="
-                + $coursePresentationId
-                + "&offset="
-                + $offset
-                + "&limit="
-                + $pageSize
+            $studentSearchPath = "/api/student-analysis/search?coursePresentationId=$coursePresentationId&offset=$offset&limit=$pageSize"
 
             $studentRows = @(
                 Get-ApiJson -Path $studentSearchPath
@@ -200,9 +193,7 @@ foreach ($course in @($courses)) {
 
                 $studentIndexMap[[string]$row.studentCourseId] = $row
 
-                $studentDetailPath =
-                    "/api/student-analysis/"
-                    + $row.studentCourseId
+                $studentDetailPath = "/api/student-analysis/$($row.studentCourseId)"
 
                 try {
                     $studentDetail =
@@ -211,10 +202,7 @@ foreach ($course in @($courses)) {
                     Save-Response -Path $studentDetailPath -Data $studentDetail
                 }
                 catch {
-                    Write-Warning (
-                        "Skip student detail: "
-                        + $studentDetailPath
-                    )
+                    Write-Warning "Skip student detail: $studentDetailPath"
                 }
             }
 
@@ -226,10 +214,7 @@ foreach ($course in @($courses)) {
         }
     }
     catch {
-        Write-Warning (
-            "Skip student index for course "
-            + $coursePresentationId
-        )
+        Write-Warning "Skip student index for course $coursePresentationId"
     }
 }
 
