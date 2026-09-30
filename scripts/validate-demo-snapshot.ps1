@@ -167,18 +167,41 @@ $forbiddenChecks = @(
     }
 )
 
-foreach ($check in $forbiddenChecks) {
-    if (
-        [regex]::IsMatch(
-            $rawJson,
-            $check.Pattern,
-            [System.Text.RegularExpressions.RegexOptions]::IgnoreCase
-        )
-    ) {
-        throw (
-            "Sensitive data check failed: {0}" -f
-            $check.Name
-        )
+$safetyDocuments = @(
+    [PSCustomObject]@{
+        Name = $file.Name
+        Json = $rawJson
+    }
+)
+
+if ($storageMode -eq "SHARDED_V1") {
+    foreach ($shardFile in $shardFiles) {
+        $safetyDocuments +=
+            [PSCustomObject]@{
+                Name = $shardFile.Name
+                Json = [System.IO.File]::ReadAllText(
+                    $shardFile.FullName,
+                    [System.Text.Encoding]::UTF8
+                )
+            }
+    }
+}
+
+foreach ($document in $safetyDocuments) {
+    foreach ($check in $forbiddenChecks) {
+        if (
+            [regex]::IsMatch(
+                $document.Json,
+                $check.Pattern,
+                [System.Text.RegularExpressions.RegexOptions]::IgnoreCase
+            )
+        ) {
+            throw (
+                "Sensitive data check failed: {0} / {1}" -f
+                $document.Name,
+                $check.Name
+            )
+        }
     }
 }
 
