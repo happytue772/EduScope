@@ -28,12 +28,14 @@ public class StudentAnalysisRepository {
     /**
      * 익명 Student ID 및 강의를 기준으로 검색한다.
      *
-     * 빈 검색어이면 실제 학생 수강 정보 중
-     * 앞의 100건을 반환한다.
+     * 기본값은 기존과 동일하게 100건이며,
+     * Snapshot Export에서는 offset/limit으로 전체를 순회한다.
      */
     public List<StudentSearchResponse> search(
             String keyword,
-            Long coursePresentationId) {
+            Long coursePresentationId,
+            int offset,
+            int limit) {
 
         StringBuilder sql = new StringBuilder("""
             SELECT
@@ -98,8 +100,19 @@ public class StudentAnalysisRepository {
                 CP.CODE_MODULE,
                 CP.CODE_PRESENTATION
 
-            FETCH FIRST 100 ROWS ONLY
+            OFFSET :offset ROWS
+            FETCH NEXT :limit ROWS ONLY
             """);
+
+        params.put(
+            "offset",
+            offset
+        );
+
+        params.put(
+            "limit",
+            limit
+        );
 
         return jdbcTemplate.query(
             sql.toString(),
