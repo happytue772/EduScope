@@ -42,11 +42,25 @@ public class StudentAnalysisController {
             @RequestParam(
                 required = false
             )
-            Long coursePresentationId) {
+            Long coursePresentationId,
+
+            @RequestParam(
+                required = false,
+                defaultValue = "0"
+            )
+            Integer offset,
+
+            @RequestParam(
+                required = false,
+                defaultValue = "100"
+            )
+            Integer limit) {
 
         return service.search(
             keyword,
-            coursePresentationId
+            coursePresentationId,
+            offset,
+            limit
         );
     }
 
