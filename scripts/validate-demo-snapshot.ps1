@@ -64,28 +64,84 @@ $courseCount = @(
     $courseProperty.Value
 ).Count
 
-$studentDetailCount = @(
-    $responseProperties |
-    Where-Object {
-        $_.Name -match '^/api/student-analysis/[0-9]+$'
-    }
-).Count
-
 $studentIndexCount = @(
     $snapshot.studentSearchIndex
 ).Count
 
+$storageMode = $snapshot.metadata.storageMode
+$studentDetailCount = 0
+$shardFiles = @()
+
+if ($storageMode -eq "SHARDED_V1") {
+    $snapshotDirectory = [System.IO.Path]::GetDirectoryName($fullPath)
+    $studentDirectory = Join-Path $snapshotDirectory "students"
+
+    if (-not (Test-Path -LiteralPath $studentDirectory -PathType Container)) {
+        throw "Snapshot students directory is missing."
+    }
+
+    $shardFiles = @(
+        Get-ChildItem -LiteralPath $studentDirectory -Filter "page-*.json" -File |
+        Sort-Object Name
+    )
+
+    if ($shardFiles.Count -eq 0) {
+        throw "Snapshot student shard files are missing."
+    }
+
+    foreach ($shardFile in $shardFiles) {
+        $shardRawJson = [System.IO.File]::ReadAllText(
+            $shardFile.FullName,
+            [System.Text.Encoding]::UTF8
+        )
+
+        try {
+            $shard = ConvertFrom-Json -InputObject $shardRawJson
+        }
+        catch {
+            throw ("Invalid shard JSON: {0} / {1}" -f $shardFile.Name, $_.Exception.Message)
+        }
+
+        if ($null -eq $shard.responses) {
+            throw ("Shard responses object is missing: {0}" -f $shardFile.Name)
+        }
+
+        $studentDetailCount += @(
+            $shard.responses.PSObject.Properties |
+            Where-Object {
+                $_.Name -match '^/api/student-analysis/[0-9]+$'
+            }
+        ).Count
+    }
+}
+else {
+    $studentDetailCount = @(
+        $responseProperties |
+        Where-Object {
+            $_.Name -match '^/api/student-analysis/[0-9]+$'
+        }
+    ).Count
+}
+
+$displayStorageMode = if ($null -eq $storageMode) {
+    "MONOLITHIC"
+}
+else {
+    $storageMode
+}
+
+Write-Host ("Storage mode: {0}" -f $displayStorageMode)
 Write-Host ("Responses: {0}" -f $responseProperties.Count)
 Write-Host ("Courses: {0}" -f $courseCount)
 Write-Host ("Student details: {0}" -f $studentDetailCount)
 Write-Host ("Student index rows: {0}" -f $studentIndexCount)
 
+if ($storageMode -eq "SHARDED_V1") {
+    Write-Host ("Student shard files: {0}" -f $shardFiles.Count)
+}
+
 if ($studentDetailCount -ne $studentIndexCount) {
-    throw (
-        "Student detail/index count mismatch. details={0}, index={1}" -f
-        $studentDetailCount,
-        $studentIndexCount
-    )
+    throw ("Student detail/index count mismatch. details={0}, index={1}" -f $studentDetailCount, $studentIndexCount)
 }
 
 $forbiddenChecks = @(
@@ -111,31 +167,64 @@ $forbiddenChecks = @(
     }
 )
 
-foreach ($check in $forbiddenChecks) {
-    if (
-        [regex]::IsMatch(
-            $rawJson,
-            $check.Pattern,
-            [System.Text.RegularExpressions.RegexOptions]::IgnoreCase
-        )
-    ) {
-        throw (
-            "Sensitive data check failed: {0}" -f
-            $check.Name
-        )
+$safetyDocuments = @(
+    [PSCustomObject]@{
+        Name = $file.Name
+        Json = $rawJson
+    }
+)
+
+if ($storageMode -eq "SHARDED_V1") {
+    foreach ($shardFile in $shardFiles) {
+        $safetyDocuments +=
+            [PSCustomObject]@{
+                Name = $shardFile.Name
+                Json = [System.IO.File]::ReadAllText(
+                    $shardFile.FullName,
+                    [System.Text.Encoding]::UTF8
+                )
+            }
+    }
+}
+
+foreach ($document in $safetyDocuments) {
+    foreach ($check in $forbiddenChecks) {
+        if (
+            [regex]::IsMatch(
+                $document.Json,
+                $check.Pattern,
+                [System.Text.RegularExpressions.RegexOptions]::IgnoreCase
+            )
+        ) {
+            throw (
+                "Sensitive data check failed: {0} / {1}" -f
+                $document.Name,
+                $check.Name
+            )
+        }
     }
 }
 
 Write-Host "Sensitive data check: PASS"
 
-if ($file.Length -ge 100MB) {
-    Write-Warning "Snapshot is 100 MB or larger. GitHub regular push will be blocked."
+$largestFile = $file
+
+if ($storageMode -eq "SHARDED_V1") {
+    foreach ($shardFile in $shardFiles) {
+        if ($shardFile.Length -gt $largestFile.Length) {
+            $largestFile = $shardFile
+        }
+    }
 }
-elseif ($file.Length -ge 50MB) {
-    Write-Warning "Snapshot is 50 MB or larger. GitHub will warn and browser loading may be heavy."
+
+if ($largestFile.Length -ge 100MB) {
+    throw ("Snapshot file is 100 MB or larger: {0}" -f $largestFile.FullName)
+}
+elseif ($largestFile.Length -ge 50MB) {
+    Write-Warning ("Snapshot file is 50 MB or larger: {0}" -f $largestFile.FullName)
 }
 else {
-    Write-Host "Repository file-size check: PASS"
+    Write-Host ("Repository file-size check: PASS (largest={0:N2} MB)" -f ($largestFile.Length / 1MB))
 }
 
 Write-Host ""
