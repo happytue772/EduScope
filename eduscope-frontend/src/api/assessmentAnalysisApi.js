@@ -1,3 +1,5 @@
+import { apiFetch } from './apiFetch'
+
 /**
  * 특정 강의의 평가 분석 조회.
  */
@@ -5,7 +7,7 @@ export async function getAssessmentAnalysis(
   coursePresentationId
 ) {
 
-  const response = await fetch(
+  const response = await apiFetch(
     '/api/assessment-analysis/'
     + coursePresentationId,
     {
