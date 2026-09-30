@@ -29,7 +29,6 @@ function Normalize-ApiKey {
         }
 
         $split = $part.Split('=', 2)
-
         $name = [System.Uri]::UnescapeDataString($split[0])
 
         $value = if ($split.Length -gt 1) {
@@ -63,7 +62,64 @@ function Normalize-ApiKey {
     return $uri.AbsolutePath + "?" + $query
 }
 
-function Get-ApiJson {
+function Get-Utf8ResponseContent {
+    param(
+        [Parameter(Mandatory = $true)]
+        $Response
+    )
+
+    # Windows PowerShell 5.1에서도 API 본문을 UTF-8 기준으로 읽는다.
+    if ($null -ne $Response.RawContentStream) {
+        try {
+            $stream = $Response.RawContentStream
+
+            if ($stream.CanSeek) {
+                $stream.Position = 0
+            }
+
+            $reader = New-Object System.IO.StreamReader(
+                $stream,
+                [System.Text.Encoding]::UTF8,
+                $true,
+                4096,
+                $true
+            )
+
+            try {
+                return $reader.ReadToEnd()
+            }
+            finally {
+                $reader.Dispose()
+            }
+        }
+        catch {
+            # RawContentStream을 사용할 수 없는 환경에서는 Content로 fallback한다.
+        }
+    }
+
+    return [string]$Response.Content
+}
+
+function Get-JsonRootKind {
+    param(
+        [Parameter(Mandatory = $true)]
+        [string]$Json
+    )
+
+    $trimmed = $Json.TrimStart()
+
+    if ($trimmed.StartsWith("[")) {
+        return "ARRAY"
+    }
+
+    if ($trimmed.StartsWith("{")) {
+        return "OBJECT"
+    }
+
+    return "SCALAR"
+}
+
+function Get-ApiJsonResponse {
     param(
         [Parameter(Mandatory = $true)]
         [string]$Path
@@ -71,7 +127,83 @@ function Get-ApiJson {
 
     Write-Host "GET $Path"
 
-    return Invoke-RestMethod -Uri ($BaseUrl.TrimEnd('/') + $Path) -Method Get -WebSession $script:Session -Headers @{ Accept = "application/json" }
+    $requestParams = @{
+        Uri = $BaseUrl.TrimEnd('/') + $Path
+        Method = "Get"
+        WebSession = $script:Session
+        Headers = @{ Accept = "application/json" }
+        UseBasicParsing = $true
+    }
+
+    $response = Invoke-WebRequest @requestParams
+    $rawJson = Get-Utf8ResponseContent -Response $response
+
+    if ([string]::IsNullOrWhiteSpace($rawJson)) {
+        throw "Empty JSON response: $Path"
+    }
+
+    try {
+        $data = ConvertFrom-Json -InputObject $rawJson
+    }
+    catch {
+        throw "Invalid JSON response: $Path / $($_.Exception.Message)"
+    }
+
+    # RawJson은 최종 Snapshot에 그대로 넣어 원래 JSON Array/Object 구조를 보존한다.
+    return [PSCustomObject]@{
+        Data = $data
+        RawJson = $rawJson.Trim()
+        RootKind = Get-JsonRootKind -Json $rawJson
+    }
+}
+
+function Assert-RootKind {
+    param(
+        [Parameter(Mandatory = $true)]
+        [string]$Path,
+
+        [Parameter(Mandatory = $true)]
+        $Response,
+
+        [Parameter(Mandatory = $true)]
+        [ValidateSet("ARRAY", "OBJECT", "SCALAR")]
+        [string]$Expected
+    )
+
+    if ($Response.RootKind -ne $Expected) {
+        throw (
+            "Unexpected JSON root for "
+            + $Path
+            + ". Expected="
+            + $Expected
+            + ", Actual="
+            + $Response.RootKind
+        )
+    }
+}
+
+function Sanitize-PublicResponseJson {
+    param(
+        [Parameter(Mandatory = $true)]
+        [string]$Path,
+
+        [Parameter(Mandatory = $true)]
+        [string]$RawJson
+    )
+
+    $result = $RawJson
+
+    # 공개 Snapshot에는 Windows staging 경로를 노출하지 않는다.
+    if ($Path.StartsWith("/api/analysis-job-overview")) {
+        $result = [regex]::Replace(
+            $result,
+            '("resultFilePath"\s*:\s*)"(?:\\.|[^"\\])*"',
+            '$1null',
+            [System.Text.RegularExpressions.RegexOptions]::IgnoreCase
+        )
+    }
+
+    return $result
 }
 
 function Save-Response {
@@ -80,15 +212,62 @@ function Save-Response {
         [string]$Path,
 
         [Parameter(Mandatory = $true)]
-        $Data
+        $Response
     )
 
     $key = Normalize-ApiKey -Path $Path
-    $script:Responses[$key] = $Data
+
+    $script:Responses[$key] =
+        Sanitize-PublicResponseJson -Path $Path -RawJson $Response.RawJson
+}
+
+function Assert-PublicSnapshotSafety {
+    param(
+        [Parameter(Mandatory = $true)]
+        [string]$Json
+    )
+
+    $checks = @(
+        [PSCustomObject]@{
+            Name = "passwordHash field"
+            Pattern = '"passwordHash"\s*:'
+        },
+        [PSCustomObject]@{
+            Name = "ipAddress field"
+            Pattern = '"ipAddress"\s*:'
+        },
+        [PSCustomObject]@{
+            Name = "database password variable"
+            Pattern = 'EDUSCOPE_DB_PASSWORD'
+        },
+        [PSCustomObject]@{
+            Name = "private key"
+            Pattern = '-----BEGIN [A-Z ]*PRIVATE KEY-----'
+        },
+        [PSCustomObject]@{
+            Name = "Windows absolute path"
+            Pattern = '[A-Za-z]:\\\\'
+        }
+    )
+
+    foreach ($check in $checks) {
+        if (
+            [regex]::IsMatch(
+                $Json,
+                $check.Pattern,
+                [System.Text.RegularExpressions.RegexOptions]::IgnoreCase
+            )
+        ) {
+            throw (
+                "Public Snapshot safety check failed: "
+                + $check.Name
+            )
+        }
+    }
 }
 
 Write-Host ""
-Write-Host "EduScope 실제 API Snapshot Export"
+Write-Host "EduScope API Snapshot Export"
 Write-Host "Base URL: $BaseUrl"
 Write-Host ""
 
@@ -101,7 +280,14 @@ $password = [System.Net.NetworkCredential]::new(
 
 $script:Session = New-Object Microsoft.PowerShell.Commands.WebRequestSession
 
-$csrf = Invoke-RestMethod -Uri ($BaseUrl.TrimEnd('/') + "/api/auth/csrf") -Method Get -WebSession $script:Session -Headers @{ Accept = "application/json" }
+$csrfParams = @{
+    Uri = $BaseUrl.TrimEnd('/') + "/api/auth/csrf"
+    Method = "Get"
+    WebSession = $script:Session
+    Headers = @{ Accept = "application/json" }
+}
+
+$csrf = Invoke-RestMethod @csrfParams
 
 $loginBody = @{
     username = $LoginId
@@ -110,7 +296,17 @@ $loginBody = @{
 
 $loginBody[$csrf.parameterName] = $csrf.token
 
-Invoke-WebRequest -Uri ($BaseUrl.TrimEnd('/') + "/api/auth/login") -Method Post -WebSession $script:Session -ContentType "application/x-www-form-urlencoded" -Body $loginBody -Headers @{ Accept = "application/json" } -UseBasicParsing | Out-Null
+$loginParams = @{
+    Uri = $BaseUrl.TrimEnd('/') + "/api/auth/login"
+    Method = "Post"
+    WebSession = $script:Session
+    ContentType = "application/x-www-form-urlencoded"
+    Body = $loginBody
+    Headers = @{ Accept = "application/json" }
+    UseBasicParsing = $true
+}
+
+Invoke-WebRequest @loginParams | Out-Null
 
 Remove-Variable password
 
@@ -119,10 +315,13 @@ Write-Host "Login success."
 $script:Responses = @{}
 $studentIndexMap = @{}
 
-$datasets = Get-ApiJson -Path "/api/datasets"
-Save-Response -Path "/api/datasets" -Data $datasets
+$datasetsResponse = Get-ApiJsonResponse -Path "/api/datasets"
+Assert-RootKind -Path "/api/datasets" -Response $datasetsResponse -Expected "ARRAY"
+Save-Response -Path "/api/datasets" -Response $datasetsResponse
 
-foreach ($dataset in @($datasets)) {
+$datasets = @($datasetsResponse.Data)
+
+foreach ($dataset in $datasets) {
     $datasetId = $dataset.datasetId
 
     if ($null -eq $datasetId) {
@@ -138,8 +337,8 @@ foreach ($dataset in @($datasets)) {
 
     foreach ($path in $paths) {
         try {
-            $data = Get-ApiJson -Path $path
-            Save-Response -Path $path -Data $data
+            $response = Get-ApiJsonResponse -Path $path
+            Save-Response -Path $path -Response $response
         }
         catch {
             Write-Warning ("Skip: " + $path + " / " + $_.Exception.Message)
@@ -147,10 +346,13 @@ foreach ($dataset in @($datasets)) {
     }
 }
 
-$courses = Get-ApiJson -Path "/api/courses"
-Save-Response -Path "/api/courses" -Data $courses
+$coursesResponse = Get-ApiJsonResponse -Path "/api/courses"
+Assert-RootKind -Path "/api/courses" -Response $coursesResponse -Expected "ARRAY"
+Save-Response -Path "/api/courses" -Response $coursesResponse
 
-foreach ($course in @($courses)) {
+$courses = @($coursesResponse.Data)
+
+foreach ($course in $courses) {
     $coursePresentationId = $course.coursePresentationId
 
     if ($null -eq $coursePresentationId) {
@@ -167,8 +369,8 @@ foreach ($course in @($courses)) {
 
     foreach ($path in $analysisPaths) {
         try {
-            $data = Get-ApiJson -Path $path
-            Save-Response -Path $path -Data $data
+            $response = Get-ApiJsonResponse -Path $path
+            Save-Response -Path $path -Response $response
         }
         catch {
             Write-Warning ("Skip: " + $path + " / " + $_.Exception.Message)
@@ -178,60 +380,141 @@ foreach ($course in @($courses)) {
     try {
         $offset = 0
         $pageSize = 500
+        $courseSeenStudentIds = @{}
 
         while ($true) {
-            $studentSearchPath = "/api/student-analysis/search?coursePresentationId=$coursePresentationId&offset=$offset&limit=$pageSize"
+            $studentSearchPath =
+                "/api/student-analysis/search"
+                + "?coursePresentationId=$coursePresentationId"
+                + "&offset=$offset"
+                + "&limit=$pageSize"
 
-            $studentRows = @(
-                Get-ApiJson -Path $studentSearchPath
-            )
+            $studentPage = Get-ApiJsonResponse -Path $studentSearchPath
+
+            Assert-RootKind -Path $studentSearchPath -Response $studentPage -Expected "ARRAY"
+
+            $studentRows = @($studentPage.Data)
+            $rowCount = $studentRows.Count
+
+            if ($rowCount -eq 0) {
+                break
+            }
+
+            $newRowCount = 0
 
             foreach ($row in $studentRows) {
                 if ($null -eq $row.studentCourseId) {
                     continue
                 }
 
-                $studentIndexMap[[string]$row.studentCourseId] = $row
+                $studentCourseKey = [string]$row.studentCourseId
 
-                $studentDetailPath = "/api/student-analysis/$($row.studentCourseId)"
+                if (-not $courseSeenStudentIds.ContainsKey($studentCourseKey)) {
+                    $courseSeenStudentIds[$studentCourseKey] = $true
+                    $newRowCount++
+                }
+
+                $studentIndexMap[$studentCourseKey] = $row
+
+                $studentDetailPath =
+                    "/api/student-analysis/"
+                    + $row.studentCourseId
 
                 try {
-                    $studentDetail =
-                        Get-ApiJson -Path $studentDetailPath
-
-                    Save-Response -Path $studentDetailPath -Data $studentDetail
+                    $studentDetail = Get-ApiJsonResponse -Path $studentDetailPath
+                    Save-Response -Path $studentDetailPath -Response $studentDetail
                 }
                 catch {
-                    Write-Warning "Skip student detail: $studentDetailPath"
+                    Write-Warning (
+                        "Skip student detail: "
+                        + $studentDetailPath
+                    )
                 }
             }
 
-            if ($studentRows.Count -lt $pageSize) {
-                break
+            if ($newRowCount -eq 0) {
+                throw (
+                    "Student pagination did not advance for course "
+                    + $coursePresentationId
+                    + ". Check deployed Backend offset/limit support."
+                )
             }
 
-            $offset += $pageSize
+            # 실제 반환 건수만큼 이동하여 서버가 limit보다 작은 cap을 사용해도 전체를 순회한다.
+            $offset += $rowCount
         }
+
+        Write-Host (
+            "Student rows for course "
+            + $coursePresentationId
+            + ": "
+            + $courseSeenStudentIds.Count
+        )
     }
     catch {
-        Write-Warning "Skip student index for course $coursePresentationId"
+        throw (
+            "Student index export failed for course "
+            + $coursePresentationId
+            + " / "
+            + $_.Exception.Message
+        )
     }
 }
 
-$studentSearchIndex =
-    @($studentIndexMap.Values) |
+$studentSearchIndex = @(
+    $studentIndexMap.Values |
     Sort-Object sourceStudentId, coursePresentationId
+)
 
-$snapshot = [ordered]@{
-    metadata = [ordered]@{
-        exportedAtUtc = [DateTime]::UtcNow.ToString("o")
-        source = "EduScope deployed API backed by Oracle Autonomous DB"
-        mode = "READ_ONLY_SNAPSHOT"
-        note = "실제 API 응답을 저장한 공개용 읽기 전용 Snapshot"
-    }
-    responses = $script:Responses
-    studentSearchIndex = $studentSearchIndex
+$metadata = [ordered]@{
+    exportedAtUtc = [DateTime]::UtcNow.ToString("o")
+    source = "EduScope deployed API backed by Oracle Autonomous DB"
+    mode = "READ_ONLY_SNAPSHOT"
+    note = "Public read-only snapshot exported from real API responses"
 }
+
+$metadataJson = ConvertTo-Json -InputObject $metadata -Depth 10
+$studentIndexJson = ConvertTo-Json -InputObject $studentSearchIndex -Depth 20
+
+$responseEntries = New-Object System.Collections.Generic.List[string]
+
+foreach ($key in ($script:Responses.Keys | Sort-Object)) {
+    $jsonKey = ConvertTo-Json -InputObject ([string]$key) -Compress
+    $rawValue = [string]$script:Responses[$key]
+
+    $entry =
+        "    "
+        + $jsonKey
+        + ": "
+        + $rawValue
+
+    [void]$responseEntries.Add($entry)
+}
+
+$responsesJson =
+    "{"
+    + [Environment]::NewLine
+    + ($responseEntries -join ("," + [Environment]::NewLine))
+    + [Environment]::NewLine
+    + "  }"
+
+$json =
+    "{"
+    + [Environment]::NewLine
+    + '  "metadata": '
+    + $metadataJson
+    + ","
+    + [Environment]::NewLine
+    + '  "responses": '
+    + $responsesJson
+    + ","
+    + [Environment]::NewLine
+    + '  "studentSearchIndex": '
+    + $studentIndexJson
+    + [Environment]::NewLine
+    + "}"
+
+Assert-PublicSnapshotSafety -Json $json
 
 $repoRoot = Split-Path -Parent $PSScriptRoot
 
@@ -241,11 +524,10 @@ if ([System.IO.Path]::IsPathRooted($OutputFile)) {
 else {
     $fullOutputPath = Join-Path $repoRoot $OutputFile
 }
+
 $outputDirectory = [System.IO.Path]::GetDirectoryName($fullOutputPath)
 
 New-Item -ItemType Directory -Path $outputDirectory -Force | Out-Null
-
-$json = $snapshot | ConvertTo-Json -Depth 100
 
 [System.IO.File]::WriteAllText(
     $fullOutputPath,
@@ -258,4 +540,6 @@ Write-Host "Snapshot created:"
 Write-Host $fullOutputPath
 Write-Host ""
 Write-Host ("Responses: " + $script:Responses.Count)
+Write-Host ("Courses: " + $courses.Count)
 Write-Host ("Student index rows: " + $studentSearchIndex.Count)
+Write-Host "Safety check: PASS"
