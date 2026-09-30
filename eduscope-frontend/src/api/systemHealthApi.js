@@ -1,3 +1,5 @@
+import { apiFetch } from './apiFetch'
+
 /**
  * ADMIN 전용 System Health 조회.
  *
@@ -10,7 +12,7 @@
 export async function getSystemHealth() {
 
   const response =
-    await fetch(
+    await apiFetch(
       '/api/admin/system-health',
       {
         method: 'GET',
