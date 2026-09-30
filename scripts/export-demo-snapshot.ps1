@@ -171,14 +171,7 @@ function Assert-RootKind {
     )
 
     if ($Response.RootKind -ne $Expected) {
-        throw (
-            "Unexpected JSON root for "
-            + $Path
-            + ". Expected="
-            + $Expected
-            + ", Actual="
-            + $Response.RootKind
-        )
+        throw ("Unexpected JSON root for {0}. Expected={1}, Actual={2}" -f $Path, $Expected, $Response.RootKind)
     }
 }
 
@@ -258,10 +251,7 @@ function Assert-PublicSnapshotSafety {
                 [System.Text.RegularExpressions.RegexOptions]::IgnoreCase
             )
         ) {
-            throw (
-                "Public Snapshot safety check failed: "
-                + $check.Name
-            )
+            throw ("Public Snapshot safety check failed: {0}" -f $check.Name)
         }
     }
 }
@@ -383,11 +373,12 @@ foreach ($course in $courses) {
         $courseSeenStudentIds = @{}
 
         while ($true) {
-            $studentSearchPath =
-                "/api/student-analysis/search"
-                + "?coursePresentationId=$coursePresentationId"
-                + "&offset=$offset"
-                + "&limit=$pageSize"
+            $studentSearchPath = (
+                "/api/student-analysis/search?coursePresentationId={0}&offset={1}&limit={2}" -f
+                $coursePresentationId,
+                $offset,
+                $pageSize
+            )
 
             $studentPage = Get-ApiJsonResponse -Path $studentSearchPath
 
@@ -416,27 +407,23 @@ foreach ($course in $courses) {
 
                 $studentIndexMap[$studentCourseKey] = $row
 
-                $studentDetailPath =
-                    "/api/student-analysis/"
-                    + $row.studentCourseId
+                $studentDetailPath = (
+                    "/api/student-analysis/{0}" -f $row.studentCourseId
+                )
 
                 try {
                     $studentDetail = Get-ApiJsonResponse -Path $studentDetailPath
                     Save-Response -Path $studentDetailPath -Response $studentDetail
                 }
                 catch {
-                    Write-Warning (
-                        "Skip student detail: "
-                        + $studentDetailPath
-                    )
+                    Write-Warning ("Skip student detail: {0}" -f $studentDetailPath)
                 }
             }
 
             if ($newRowCount -eq 0) {
                 throw (
-                    "Student pagination did not advance for course "
-                    + $coursePresentationId
-                    + ". Check deployed Backend offset/limit support."
+                    "Student pagination did not advance for course {0}. Check deployed Backend offset/limit support." -f
+                    $coursePresentationId
                 )
             }
 
@@ -445,18 +432,16 @@ foreach ($course in $courses) {
         }
 
         Write-Host (
-            "Student rows for course "
-            + $coursePresentationId
-            + ": "
-            + $courseSeenStudentIds.Count
+            "Student rows for course {0}: {1}" -f
+            $coursePresentationId,
+            $courseSeenStudentIds.Count
         )
     }
     catch {
         throw (
-            "Student index export failed for course "
-            + $coursePresentationId
-            + " / "
-            + $_.Exception.Message
+            "Student index export failed for course {0} / {1}" -f
+            $coursePresentationId,
+            $_.Exception.Message
         )
     }
 }
@@ -482,37 +467,27 @@ foreach ($key in ($script:Responses.Keys | Sort-Object)) {
     $jsonKey = ConvertTo-Json -InputObject ([string]$key) -Compress
     $rawValue = [string]$script:Responses[$key]
 
-    $entry =
-        "    "
-        + $jsonKey
-        + ": "
-        + $rawValue
+    $entry = "    {0}: {1}" -f $jsonKey, $rawValue
 
     [void]$responseEntries.Add($entry)
 }
 
-$responsesJson =
-    "{"
-    + [Environment]::NewLine
-    + ($responseEntries -join ("," + [Environment]::NewLine))
-    + [Environment]::NewLine
-    + "  }"
+$newline = [Environment]::NewLine
 
-$json =
-    "{"
-    + [Environment]::NewLine
-    + '  "metadata": '
-    + $metadataJson
-    + ","
-    + [Environment]::NewLine
-    + '  "responses": '
-    + $responsesJson
-    + ","
-    + [Environment]::NewLine
-    + '  "studentSearchIndex": '
-    + $studentIndexJson
-    + [Environment]::NewLine
-    + "}"
+$responsesJson = (
+    "{0}{1}{2}{1}  }" -f
+    "{",
+    $newline,
+    ($responseEntries -join ("," + $newline))
+)
+
+$json = @"
+{
+  "metadata": $metadataJson,
+  "responses": $responsesJson,
+  "studentSearchIndex": $studentIndexJson
+}
+"@
 
 Assert-PublicSnapshotSafety -Json $json
 
