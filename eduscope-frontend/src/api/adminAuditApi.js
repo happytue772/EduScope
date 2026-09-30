@@ -1,3 +1,5 @@
+import { apiFetch } from './apiFetch'
+
 import {
   getCsrfToken
 } from './authApi'
@@ -24,7 +26,7 @@ export async function getAdminAuditLogs(
 
 
   const response =
-    await fetch(
+    await apiFetch(
       '/api/admin/audit-logs?'
       + params.toString(),
       {
@@ -67,7 +69,7 @@ export async function getAuditPurgePreview(
 
 
   const response =
-    await fetch(
+    await apiFetch(
       '/api/admin/audit-logs/purge-preview?'
       + params.toString(),
       {
@@ -124,7 +126,7 @@ export async function purgeAuditLogs(
 
 
   const response =
-    await fetch(
+    await apiFetch(
       '/api/admin/audit-logs/purge?'
       + params.toString(),
       {

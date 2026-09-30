@@ -34,6 +34,11 @@ import {
   getCurrentUser
 } from './api/authApi'
 
+import {
+  isSnapshotMode,
+  SNAPSHOT_USER
+} from './snapshot/snapshotMode'
+
 
 /* =========================
  * 인증 화면
@@ -151,6 +156,27 @@ function ProtectedLayout() {
 
 
     async function loadCurrentUser() {
+
+      /*
+       * Oracle DB가 없어도 동작하는
+       * 읽기 전용 Snapshot 모드.
+       */
+      if (
+        isSnapshotMode()
+      ) {
+
+        if (mounted) {
+
+          setUser(
+            SNAPSHOT_USER
+          )
+        }
+
+        setLoading(false)
+
+        return
+      }
+
 
       try {
 

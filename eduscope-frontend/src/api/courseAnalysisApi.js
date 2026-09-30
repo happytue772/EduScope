@@ -1,9 +1,11 @@
+import { apiFetch } from './apiFetch'
+
 /**
  * 강의 목록 조회.
  */
 export async function getCourses() {
 
-  const response = await fetch(
+  const response = await apiFetch(
     '/api/courses',
     {
       method: 'GET',
@@ -27,7 +29,7 @@ export async function getCourseAnalysis(
   coursePresentationId
 ) {
 
-  const response = await fetch(
+  const response = await apiFetch(
     '/api/course-analysis/' + coursePresentationId,
     {
       method: 'GET',

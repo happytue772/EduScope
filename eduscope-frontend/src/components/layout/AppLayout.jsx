@@ -178,6 +178,14 @@ function AppLayout({
 
 
         <div className="app-content-shell">
+
+          {user?.snapshotMode && (
+            <div className="snapshot-mode-banner">
+              현재 화면은 Oracle DB 삭제 후에도 유지되는 읽기 전용 스냅샷입니다.
+              분석 실행·회원관리·데이터 변경은 사용할 수 없습니다.
+            </div>
+          )}
+
           <Outlet context={{ user }} />
         </div>
 

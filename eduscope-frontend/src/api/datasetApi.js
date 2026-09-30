@@ -1,9 +1,11 @@
+import { apiFetch } from './apiFetch'
+
 /**
  * 등록된 Dataset 목록 조회.
  */
 export async function getDatasets() {
 
-  const response = await fetch(
+  const response = await apiFetch(
     '/api/datasets',
     {
       method: 'GET',
@@ -30,7 +32,7 @@ export async function getDatasetDetail(
   datasetId
 ) {
 
-  const response = await fetch(
+  const response = await apiFetch(
     '/api/dataset-details/'
     + encodeURIComponent(datasetId),
     {

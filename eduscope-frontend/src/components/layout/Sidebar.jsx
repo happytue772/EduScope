@@ -140,7 +140,11 @@ function Sidebar({
 
 
         <span>
-          보안 세션 연결됨
+          {
+            user?.snapshotMode
+              ? '읽기 전용 스냅샷'
+              : '보안 세션 연결됨'
+          }
         </span>
 
       </div>

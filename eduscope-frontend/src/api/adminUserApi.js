@@ -1,3 +1,5 @@
+import { apiFetch } from './apiFetch'
+
 import {
   getCsrfToken
 } from './authApi'
@@ -9,7 +11,7 @@ import {
 export async function getAdminUsers() {
 
   const response =
-    await fetch(
+    await apiFetch(
       '/api/admin/users',
       {
         method: 'GET',
@@ -48,7 +50,7 @@ export async function updateAdminUserAccess(
 
 
   const response =
-    await fetch(
+    await apiFetch(
       '/api/admin/users/'
       + encodeURIComponent(userId)
       + '/access',

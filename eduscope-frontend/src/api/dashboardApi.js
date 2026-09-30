@@ -1,3 +1,5 @@
+import { apiFetch } from './apiFetch'
+
 /**
  * EduScope Dashboard API.
  *
@@ -6,7 +8,7 @@
  */
 export async function getDashboardSummary(datasetId) {
 
-  const response = await fetch(
+  const response = await apiFetch(
     `/api/dashboard/summary?datasetId=${datasetId}`,
     {
       method: 'GET',

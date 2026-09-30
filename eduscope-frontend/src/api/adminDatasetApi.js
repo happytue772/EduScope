@@ -1,3 +1,5 @@
+import { apiFetch } from './apiFetch'
+
 import { getCsrfToken } from './authApi'
 
 /**
@@ -6,7 +8,7 @@ import { getCsrfToken } from './authApi'
  * 기존 관리 API를 유지해 논리 삭제된 Dataset도 함께 조회한다.
  */
 export async function getAdminDatasets() {
-  const response = await fetch(
+  const response = await apiFetch(
     '/api/admin/datasets',
     {
       method: 'GET',
@@ -64,7 +66,7 @@ export async function updateAdminDataset(
 export async function deleteAdminDataset(datasetId) {
   const csrf = await getCsrfToken()
 
-  const response = await fetch(
+  const response = await apiFetch(
     '/api/admin/datasets/'
       + encodeURIComponent(datasetId),
     {
@@ -113,7 +115,7 @@ export async function createDatasetVersion(
  * 특정 Dataset의 실제 DATASET_FILE 목록 조회.
  */
 export async function getAdminDatasetFiles(datasetId) {
-  const response = await fetch(
+  const response = await apiFetch(
     '/api/dataset-files/dataset/'
       + encodeURIComponent(datasetId),
     {
@@ -182,7 +184,7 @@ async function sendJsonWithCsrf(
 ) {
   const csrf = await getCsrfToken()
 
-  const response = await fetch(
+  const response = await apiFetch(
     url,
     {
       method,

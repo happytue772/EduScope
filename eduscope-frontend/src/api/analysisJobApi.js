@@ -1,3 +1,5 @@
+import { apiFetch } from './apiFetch'
+
 import {
   getCsrfToken
 } from './authApi'
@@ -11,7 +13,7 @@ export async function getAnalysisJobOverview(
 ) {
 
   const response =
-    await fetch(
+    await apiFetch(
       '/api/analysis-job-overview'
       + '?datasetId='
       + encodeURIComponent(
@@ -54,7 +56,7 @@ export async function createAnalysisJob(
 
 
   const response =
-    await fetch(
+    await apiFetch(
       '/api/analysis-jobs',
       {
         method: 'POST',
@@ -115,7 +117,7 @@ export async function retryAnalysisJob(
 
 
   const response =
-    await fetch(
+    await apiFetch(
       '/api/analysis-jobs/'
       + encodeURIComponent(
           jobId
@@ -229,7 +231,7 @@ export async function executeAnalysisJob(
 
 
   const response =
-    await fetch(
+    await apiFetch(
       '/api/analysis-jobs/'
       + encodeURIComponent(jobId)
       + '/execute',

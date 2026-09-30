@@ -1,3 +1,5 @@
+import { apiFetch } from './apiFetch'
+
 /**
  * 학생 수강정보 검색.
  */
@@ -25,7 +27,7 @@ export async function searchStudents(
     )
   }
 
-  const response = await fetch(
+  const response = await apiFetch(
     '/api/student-analysis/search?'
     + params.toString(),
     {
@@ -53,7 +55,7 @@ export async function getStudentAnalysis(
   studentCourseId
 ) {
 
-  const response = await fetch(
+  const response = await apiFetch(
     '/api/student-analysis/'
     + studentCourseId,
     {
