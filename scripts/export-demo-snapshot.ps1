@@ -366,83 +366,92 @@ foreach ($course in $courses) {
             Write-Warning ("Skip: " + $path + " / " + $_.Exception.Message)
         }
     }
+}
 
-    try {
-        $offset = 0
-        $pageSize = 500
-        $courseSeenStudentIds = @{}
+# 학생 상세는 Snapshot 전용 Bulk API로 500명씩 수집한다.
+# 기존 /api/student-analysis/{id} 응답 키 구조는 그대로 저장한다.
+$studentOffset = 0
+$studentPageSize = 500
+$bulkPageCount = 0
 
-        while ($true) {
-            $studentSearchPath = (
-                "/api/student-analysis/search?coursePresentationId={0}&offset={1}&limit={2}" -f
-                $coursePresentationId,
-                $offset,
-                $pageSize
-            )
+while ($true) {
+    $bulkPath = (
+        "/api/admin/snapshot/students?offset={0}&limit={1}" -f
+        $studentOffset,
+        $studentPageSize
+    )
 
-            $studentPage = Get-ApiJsonResponse -Path $studentSearchPath
+    $bulkResponse = Get-ApiJsonResponse -Path $bulkPath
+    Assert-RootKind -Path $bulkPath -Response $bulkResponse -Expected "OBJECT"
 
-            Assert-RootKind -Path $studentSearchPath -Response $studentPage -Expected "ARRAY"
+    $bulkData = $bulkResponse.Data
+    $items = @($bulkData.items)
+    $returnedCount = [int]$bulkData.returnedCount
 
-            $studentRows = @($studentPage.Data)
-            $rowCount = $studentRows.Count
+    if ($returnedCount -eq 0) {
+        break
+    }
 
-            if ($rowCount -eq 0) {
-                break
-            }
-
-            $newRowCount = 0
-
-            foreach ($row in $studentRows) {
-                if ($null -eq $row.studentCourseId) {
-                    continue
-                }
-
-                $studentCourseKey = [string]$row.studentCourseId
-
-                if (-not $courseSeenStudentIds.ContainsKey($studentCourseKey)) {
-                    $courseSeenStudentIds[$studentCourseKey] = $true
-                    $newRowCount++
-                }
-
-                $studentIndexMap[$studentCourseKey] = $row
-
-                $studentDetailPath = (
-                    "/api/student-analysis/{0}" -f $row.studentCourseId
-                )
-
-                try {
-                    $studentDetail = Get-ApiJsonResponse -Path $studentDetailPath
-                    Save-Response -Path $studentDetailPath -Response $studentDetail
-                }
-                catch {
-                    Write-Warning ("Skip student detail: {0}" -f $studentDetailPath)
-                }
-            }
-
-            if ($newRowCount -eq 0) {
-                throw (
-                    "Student pagination did not advance for course {0}. Check deployed Backend offset/limit support." -f
-                    $coursePresentationId
-                )
-            }
-
-            # 실제 반환 건수만큼 이동하여 서버가 limit보다 작은 cap을 사용해도 전체를 순회한다.
-            $offset += $rowCount
-        }
-
-        Write-Host (
-            "Student rows for course {0}: {1}" -f
-            $coursePresentationId,
-            $courseSeenStudentIds.Count
+    if ($items.Count -ne $returnedCount) {
+        throw (
+            "Snapshot Bulk count mismatch. returnedCount={0}, items={1}" -f
+            $returnedCount,
+            $items.Count
         )
     }
-    catch {
-        throw (
-            "Student index export failed for course {0} / {1}" -f
-            $coursePresentationId,
-            $_.Exception.Message
+
+    foreach ($item in $items) {
+        if (
+            $null -eq $item.search
+            -or
+            $null -eq $item.analysis
+            -or
+            $null -eq $item.search.studentCourseId
+        ) {
+            throw "Snapshot Bulk item is missing search/analysis/studentCourseId."
+        }
+
+        $studentCourseId = [string]$item.search.studentCourseId
+        $studentIndexMap[$studentCourseId] = $item.search
+
+        $studentDetailPath = (
+            "/api/student-analysis/{0}" -f
+            $studentCourseId
         )
+
+        # Bulk 응답 내부 analysis는 기존 학생 상세 DTO와 동일한 구조다.
+        $studentDetailRawJson = ConvertTo-Json -InputObject $item.analysis -Depth 30 -Compress
+
+        $studentDetailResponse = [PSCustomObject]@{
+            RawJson = $studentDetailRawJson
+        }
+
+        Save-Response -Path $studentDetailPath -Response $studentDetailResponse
+    }
+
+    $bulkPageCount++
+
+    Write-Host (
+        "Student bulk page {0}: offset={1}, rows={2}" -f
+        $bulkPageCount,
+        $studentOffset,
+        $returnedCount
+    )
+
+    $nextOffset = [int]$bulkData.nextOffset
+
+    if ($nextOffset -le $studentOffset) {
+        throw (
+            "Snapshot Bulk pagination did not advance. offset={0}, nextOffset={1}" -f
+            $studentOffset,
+            $nextOffset
+        )
+    }
+
+    $studentOffset = $nextOffset
+
+    if (-not [bool]$bulkData.hasMore) {
+        break
     }
 }
 
@@ -516,5 +525,6 @@ Write-Host $fullOutputPath
 Write-Host ""
 Write-Host ("Responses: " + $script:Responses.Count)
 Write-Host ("Courses: " + $courses.Count)
+Write-Host ("Student bulk pages: " + $bulkPageCount)
 Write-Host ("Student index rows: " + $studentSearchIndex.Count)
 Write-Host "Safety check: PASS"
