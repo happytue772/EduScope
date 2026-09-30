@@ -1,6 +1,6 @@
 param(
     [string]$BaseUrl = "https://eduscope-frontend.vercel.app",
-    [string]$OutputFile = ".\\eduscope-frontend\\public\\demo-snapshot\\snapshot.json",
+    [string]$OutputFile = "eduscope-frontend\\public\\demo-snapshot\\snapshot.json",
     [string]$LoginId = "demo_admin"
 )
 
@@ -233,7 +233,14 @@ $snapshot = [ordered]@{
     studentSearchIndex = $studentSearchIndex
 }
 
-$fullOutputPath = [System.IO.Path]::GetFullPath($OutputFile)
+$repoRoot = Split-Path -Parent $PSScriptRoot
+
+if ([System.IO.Path]::IsPathRooted($OutputFile)) {
+    $fullOutputPath = $OutputFile
+}
+else {
+    $fullOutputPath = Join-Path $repoRoot $OutputFile
+}
 $outputDirectory = [System.IO.Path]::GetDirectoryName($fullOutputPath)
 
 New-Item -ItemType Directory -Path $outputDirectory -Force | Out-Null
