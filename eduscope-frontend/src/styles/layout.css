@@ -206,3 +206,18 @@
   opacity: 0.6;
   cursor: default;
 }
+
+/* ============================================================
+   Snapshot Read-only Mode
+   ============================================================ */
+.snapshot-mode-banner {
+  margin: 0 0 18px;
+  padding: 12px 16px;
+  border: 1px solid rgba(180, 83, 9, 0.28);
+  border-radius: 10px;
+  background: rgba(255, 247, 237, 0.94);
+  color: #9a3412;
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1.55;
+}
