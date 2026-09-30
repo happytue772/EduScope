@@ -175,38 +175,61 @@ foreach ($course in @($courses)) {
         }
     }
 
-    $studentSearchPath =
-        "/api/student-analysis/search?coursePresentationId=$coursePresentationId"
-
     try {
-        $studentRows = @(
-            Get-ApiJson -Path $studentSearchPath
-        )
+        $offset = 0
+        $pageSize = 500
 
-        foreach ($row in $studentRows) {
-            if ($null -eq $row.studentCourseId) {
-                continue
+        while ($true) {
+            $studentSearchPath =
+                "/api/student-analysis/search"
+                + "?coursePresentationId="
+                + $coursePresentationId
+                + "&offset="
+                + $offset
+                + "&limit="
+                + $pageSize
+
+            $studentRows = @(
+                Get-ApiJson -Path $studentSearchPath
+            )
+
+            foreach ($row in $studentRows) {
+                if ($null -eq $row.studentCourseId) {
+                    continue
+                }
+
+                $studentIndexMap[[string]$row.studentCourseId] = $row
+
+                $studentDetailPath =
+                    "/api/student-analysis/"
+                    + $row.studentCourseId
+
+                try {
+                    $studentDetail =
+                        Get-ApiJson -Path $studentDetailPath
+
+                    Save-Response -Path $studentDetailPath -Data $studentDetail
+                }
+                catch {
+                    Write-Warning (
+                        "Skip student detail: "
+                        + $studentDetailPath
+                    )
+                }
             }
 
-            $studentIndexMap[[string]$row.studentCourseId] = $row
-
-            $studentDetailPath =
-                "/api/student-analysis/"
-                + $row.studentCourseId
-
-            try {
-                $studentDetail =
-                    Get-ApiJson -Path $studentDetailPath
-
-                Save-Response -Path $studentDetailPath -Data $studentDetail
+            if ($studentRows.Count -lt $pageSize) {
+                break
             }
-            catch {
-                Write-Warning ("Skip student detail: " + $studentDetailPath)
-            }
+
+            $offset += $pageSize
         }
     }
     catch {
-        Write-Warning ("Skip student index for course " + $coursePresentationId)
+        Write-Warning (
+            "Skip student index for course "
+            + $coursePresentationId
+        )
     }
 }
 
