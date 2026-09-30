@@ -1,3 +1,5 @@
+import { apiFetch } from './apiFetch'
+
 /**
  * 특정 강의의 최종성과별
  * 학습활동 비교 조회.
@@ -6,7 +8,7 @@ export async function getResultAnalysis(
   coursePresentationId
 ) {
 
-  const response = await fetch(
+  const response = await apiFetch(
     '/api/result-analysis/'
     + coursePresentationId,
     {
