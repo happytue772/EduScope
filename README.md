@@ -620,69 +620,12 @@ cd C:\EduScope
 
 ---
 
-## 16. 포트폴리오에서 강조할 포인트
 
-이 프로젝트에서 강조하려는 것은 사용한 기술의 개수가 아니라 **기술 선택의 이유와 문제 해결 과정**입니다.
-
-### 1) 데이터 처리와 서비스 DB 역할 분리
-
-대용량 활동 원본은 HDFS에 두고, Oracle은 기준정보/운영정보/분석 결과 중심으로 사용했습니다.
-
-### 2) 성공 화면만 만든 것이 아니라 실패 흐름까지 구현
-
-Hadoop Job의 SUCCESS뿐 아니라 실제 INPUT_NOT_FOUND → FAILED 흐름과 오류 저장을 검증했습니다.
-
-### 3) 상태를 한 단계로 뭉개지 않음
-
-`Hadoop SUCCESS`와 `Oracle Imported`를 서로 다른 상태로 관리했습니다.
-
-### 4) 공개 데모도 운영 구조와 분리
-
-Live Mode는 실제 Backend/DB를 사용하고, Snapshot Mode는 읽기 전용 정적 데이터로 분리해 공개 환경의 변경 위험을 줄였습니다.
-
-### 5) 성능 문제를 수치로 확인하고 구조를 변경
-
-```text
-학생 상세 약 32,593회 개별 요청
-→ 500명 Bulk
-→ 66페이지
-
-61.72 MB 단일 Snapshot
-→ Core 약 25.57 MB
-→ 학생 상세 66 Shard
-```
-
-### 6) 검증 자동화
-
-Snapshot이 만들어졌다는 사실만 확인하지 않고 데이터 건수, 민감정보, 01~10 화면 Coverage까지 별도 스크립트로 검증했습니다.
-
----
 
 ## 17. 30초 설명
 
 > EduScope는 OULAD 학습 데이터를 HDFS와 Java MapReduce로 분석하고, Spring Batch로 결과를 Oracle에 적재한 뒤 Spring Boot와 React에서 조회하는 프로젝트입니다. 분석 Job의 성공/실패와 적재 상태를 분리해 추적하고 Spring Security 기반 RBAC, Audit, System Health까지 구현했습니다. 배포 단계에서는 Vercel-Render-Oracle Live 구조와 함께, 실제 32,593명의 학생 분석 결과를 500명 단위로 분할한 읽기 전용 Snapshot 데모를 추가해 Backend나 DB가 없어도 포트폴리오 조회 화면을 유지할 수 있도록 구성했습니다.
 
----
-
-## 18. 현재 상태
-
-```text
-OULAD RAW → HDFS                         완료
-10종 MapReduce 분석 구조                  완료
-Spring Boot / React 주요 조회 화면         완료
-Spring Security / RBAC                    완료
-Analysis Job SUCCESS / FAILED 실제 검증    완료
-Audit / System Health                     완료
-Vercel → Render → Oracle Live 연결         완료
-DEMO_ADMIN 공개 조회 구조                  완료
-Static Snapshot Mode                      완료
-학생 32,593건 Snapshot                     완료
-500명 Bulk Export / 66 Shard               완료
-Snapshot 민감정보 검사                     PASS
-01~10 Snapshot Coverage                   PASS
-```
-
-Oracle은 현재 유지하고 있으며, Snapshot은 **Oracle이 없다고 가정했을 때도 조회 화면을 유지하기 위한 별도 공개 데모 구조**로 사용합니다.
 
 ---
 
