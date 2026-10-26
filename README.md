@@ -8,9 +8,9 @@
 
 ## 1. 프로젝트 목적
 
-학습 활동 원본을 DB에 모두 쌓아 차트만 보여주는 방식에서 벗어나, **원본 처리부터 분석 결과 제공까지 하나의 서비스 흐름**을 구축하는 것이 목표였습니다.
+학습 활동 원본을 DB에 모두 쌓아 차트만 보여주는 방식이 아닌 **원본 처리부터 분석 결과 제공까지 하나의 서비스 흐름**을 구축하는 것이 목표였습니다.
 
-- **데이터 처리:** 대용량 활동 원본은 HDFS에 보존하고, Java MapReduce로 집계해 서비스 DB 부담을 분리
+- **데이터 처리:** 대용량 활동 원본은 HDFS에 보존, Java MapReduce로 집계해 서비스 DB 부담을 분리
 - **안정적 운영:** 분석 실행의 성공/실패와 Oracle 적재 완료 여부를 구분하고, 오류 원인을 추적
 - **지속 가능한 시연:** 실제 운영 DB가 중지되더라도 저장된 분석 결과를 안전하게 조회할 수 있는 공개 데모 제공
 
@@ -39,7 +39,7 @@ OULAD 7 CSV → 원본 검증 → HDFS RAW → Java Hadoop MapReduce
 
 ## 3. 사용 데이터와 분석 결과의 의미
 
-**OULAD 실제 원본 CSV 7종**을 사용했습니다. 개인정보를 임의 생성하지 않으며, 원본 데이터와 분석 결과를 구분해 관리합니다.
+**OULAD 실제 원본 CSV 7종**을 사용했습니다. 개인정보를 임의 생성하지 않으며 원본 데이터와 분석 결과를 구분해 관리합니다.
 
 | 원본 데이터 | 의미 | 주요 활용 |
 |---|---|---|
@@ -62,7 +62,8 @@ OULAD 7 CSV → 원본 검증 → HDFS RAW → Java Hadoop MapReduce
 | `STUDENT_LEARNING_SUMMARY` | 학생별 학습활동·평가 통합 요약 |
 | `DATA_QUALITY` | 원본 파일의 결측·중복·참조/형식 오류 집계 |
 
-분석 결과는 각각 대응하는 Oracle `*_STAT` 테이블에 적재합니다. 일부 OULAD 날짜는 **강의 시작일=0 기준 상대 일수**이고, 최종 성과는 원본 `Pass/Fail/Withdrawn/Distinction`을 따릅니다. 웹 로그인 사용자와 OULAD 익명 학생은 연결하지 않습니다.
+분석 결과는 각각 대응하는 Oracle `*_STAT` 테이블에 적재. 
+일부 OULAD 날짜는 **강의 시작일=0 기준 상대 일수**이고 최종 성과는 원본 `Pass/Fail/Withdrawn/Distinction`을 따름. 웹 로그인 사용자와 OULAD 익명 학생은 연결하지 않음.
 
 ## 4. 핵심 구현 기능
 
@@ -137,8 +138,4 @@ npm run build
 cd ..
 .\scripts\validate-demo-snapshot.ps1
 .\scripts\validate-demo-snapshot-coverage.ps1
-```
 
----
-
-> **한 줄 정리:** 단순 분석 화면 구현이 아니라, **HDFS/MapReduce → Batch → Oracle → Spring Boot → React**로 이어지는 백엔드 중심 데이터 파이프라인과 **운영 이력·보안·DB 독립형 공개 데모**를 완성한 프로젝트입니다.
